@@ -1,0 +1,23 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: discovery-server
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+eureka:
+  client:
+    register-with-eureka: false   # this app is the registry
+    fetch-registry: false
+  server:
+    wait-time-in-ms-when-sync-empty: 0
+
+# (Optional) expose actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
