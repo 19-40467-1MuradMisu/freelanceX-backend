@@ -1,17 +1,18 @@
 package com.freelancex.biddingservice.services.interfaces;
 
-import com.freelancex.biddingservice.models.Bid;
+import com.freelancex.biddingservice.dtos.bid.*;
+import com.freelancex.biddingservice.exceptions.NotFoundException;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface BidService {
-    List<Bid> getAllBids();
+    GetBidsResponse getAllBids();
 
-    Optional<Bid> getBidById(UUID id);
+    GetBidResponse getBidById(UUID id) throws NotFoundException;
 
-    Bid saveBid(Bid bid);
+    CreateBidResponse saveBid(CreateBidRequest bid);
 
-    void deleteBid(UUID id);
+    UpdateBidResponse updateBid(UUID id, UpdateBidRequest updateBidRequest) throws NotFoundException;
+
+    DeleteBidResponse deleteBid(UUID id);
 }

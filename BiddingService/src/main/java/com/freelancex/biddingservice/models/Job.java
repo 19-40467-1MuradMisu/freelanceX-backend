@@ -17,6 +17,7 @@ enum JobStatus {
 public class Job {
 
     @Id
+    @Setter
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "job_id", nullable = false, updatable = false)
     private UUID jobId;

@@ -5,11 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/bid")
+@RequestMapping("/api/bids")
 public class BidController {
 
-    @GetMapping()
-    public String bid() {
-        return "Bidding Service";
-    }
 }
