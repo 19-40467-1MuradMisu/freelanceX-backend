@@ -13,7 +13,6 @@
 
     <artifactId>BiddingService</artifactId>
     <name>BiddingService</name>
-    
 
     <dependencies>
         <dependency>
