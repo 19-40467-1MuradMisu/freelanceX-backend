@@ -8,7 +8,6 @@
         <artifactId>freelanceX</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.freelanceX</groupId>
     <artifactId>BiddingService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>BiddingService</name>

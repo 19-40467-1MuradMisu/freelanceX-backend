@@ -7,7 +7,6 @@
         <artifactId>freelanceX</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>com.freelanceX</groupId>
     <artifactId>NotificationService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>NotificationService</name>
