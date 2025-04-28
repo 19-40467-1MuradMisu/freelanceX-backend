@@ -6,6 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -18,20 +19,27 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User createUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));  // Make sure getPassword() is available
-        return userRepository.save(user);
+public User createUser(User user) {
+    if (userRepository.existsByEmail(user.getEmail())) {
+        throw new IllegalArgumentException("Email already exists");
     }
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+    if (user.getProfile() != null) {
+        user.getProfile().setUser(user);  // 👈 Important: Set the link manually
+    }
+
+    return userRepository.save(user);
+}
+
 
     public User getUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
     }
 
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(UUID id) {
         return userRepository.findById(id);
     }
 }

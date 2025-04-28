@@ -1,20 +1,27 @@
 package com.freelancex.userservice.model;
 
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
 @Table(name = "profiles")
-@Data 
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+ @Id
+@GeneratedValue(generator = "UUID")
+@Column(name="id", updatable = false, nullable = false)
+private UUID id;
+
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -26,7 +33,9 @@ public class Profile {
 
     private boolean isSkillVerified;
 
+    
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore   
     private User user;
 }
