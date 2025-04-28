@@ -1,6 +1,6 @@
 package com.freelancex.biddingservice.controllers;
 
-import com.freelancex.biddingservice.dtos.bid.*;
+import com.freelancex.biddingservice.dtos.api.bid.*;
 import com.freelancex.biddingservice.services.interfaces.BidService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

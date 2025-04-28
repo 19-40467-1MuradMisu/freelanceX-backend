@@ -1,6 +1,6 @@
 package com.freelancex.biddingservice.services;
 
-import com.freelancex.biddingservice.dtos.contract.*;
+import com.freelancex.biddingservice.dtos.api.contract.*;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.models.Bid;
 import com.freelancex.biddingservice.models.Contract;

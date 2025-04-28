@@ -20,11 +20,12 @@ import java.util.UUID;
 public class Contract {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "contract_id", updatable = false, nullable = false)
-    private UUID contractId = UUID.randomUUID();
+    private UUID contractId;
 
     @Setter
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "bid_id", referencedColumnName = "bid_id", nullable = false)
     private Bid bid;
 

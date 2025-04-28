@@ -1,17 +1,14 @@
 package com.freelancex.biddingservice.services.interfaces;
 
-import com.freelancex.biddingservice.models.Job;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
+import com.freelancex.biddingservice.dtos.event.job.DeleteJobEvent;
+import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 
 public interface JobService {
-    List<Job> getAllJobs();
 
-    Optional<Job> getJobById(UUID id);
+    void createJob(CreateJobEvent event);
 
-    Job saveJob(Job job);
+    void updateJob(UpdateJobEvent event);
 
-    void deleteJob(UUID id);
+    void deleteJob(DeleteJobEvent event);
 }

@@ -1,4 +1,4 @@
-package com.freelancex.biddingservice.dtos.contract;
+package com.freelancex.biddingservice.dtos.api.contract;
 
 import com.freelancex.biddingservice.dtos.common.Response;
 

@@ -1,6 +1,6 @@
 package com.freelancex.biddingservice.services.interfaces;
 
-import com.freelancex.biddingservice.dtos.contract.*;
+import com.freelancex.biddingservice.dtos.api.contract.*;
 import com.freelancex.biddingservice.exceptions.ApiException;
 
 import java.util.UUID;

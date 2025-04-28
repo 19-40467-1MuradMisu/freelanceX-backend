@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "kafka.topics.user-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.user-created."
+    },
+    {
+      "name": "kafka.topics.job-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.job-created."
+    },
+    {
+      "name": "kafka.topics.contract-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.contract-created."
+    }
+  ] }

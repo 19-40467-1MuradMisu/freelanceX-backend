@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.models;
 
+import com.freelancex.biddingservice.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,9 @@ public class User {
     @Setter
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
+
+    @Setter
+    @Column(nullable = false, length = 50)
+    private UserRole role;
 }
 

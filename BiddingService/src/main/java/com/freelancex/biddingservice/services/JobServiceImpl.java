@@ -1,41 +1,65 @@
 package com.freelancex.biddingservice.services;
 
+import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
+import com.freelancex.biddingservice.dtos.event.job.DeleteJobEvent;
+import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 import com.freelancex.biddingservice.models.Job;
 import com.freelancex.biddingservice.repositories.JobRepository;
 import com.freelancex.biddingservice.services.interfaces.JobService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class JobServiceImpl implements JobService {
     private final JobRepository jobRepository;
+    private final static Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
     public JobServiceImpl(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
 
+
     @Override
-    public List<Job> getAllJobs() {
-        return jobRepository.findAll();
+    public void createJob(CreateJobEvent event) {
+        Job job = new Job();
+
+        job.setJobId(event.jobId());
+        job.setBudget(event.budget());
+        job.setTitle(event.title());
+        job.setStatus(event.status());
+
+        jobRepository.save(job);
+        logger.info("Job created: {}", job.getJobId());
     }
 
     @Override
-    public Optional<Job> getJobById(UUID id) {
-        return jobRepository.findById(id);
+    public void updateJob(UpdateJobEvent event) {
+        Optional<Job> job = jobRepository.findById(event.jobId());
+
+        if (job.isPresent()) {
+            Job jobToUpdate = job.get();
+            jobToUpdate.setTitle(event.title());
+            jobToUpdate.setStatus(event.status());
+            jobToUpdate.setBudget(event.budget());
+
+            jobRepository.save(jobToUpdate);
+            logger.info("Job updated: {}", jobToUpdate.getJobId());
+        }
     }
 
     @Override
-    public Job saveJob(Job job) {
-        return jobRepository.save(job);
-    }
+    public void deleteJob(DeleteJobEvent event) {
+        Optional<Job> job = jobRepository.findById(event.jobId());
 
-    @Override
-    public void deleteJob(UUID id) {
-        jobRepository.deleteById(id);
+        if (job.isPresent()) {
+            Job jobToDelete = job.get();
+            jobRepository.delete(jobToDelete);
+            logger.info("Job deleted: {}", jobToDelete.getJobId());
+        }
     }
 }

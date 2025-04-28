@@ -19,10 +19,14 @@ public class Job {
 
     @Setter
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private JobStatus status = JobStatus.OPEN;
+    @Column(nullable = false, length = 50)
+    private JobStatus status;
 
     @Setter
     @Column(nullable = false)
     private Double budget;
+
+    @Setter
+    @Column(nullable = false)
+    private String title;
 }
