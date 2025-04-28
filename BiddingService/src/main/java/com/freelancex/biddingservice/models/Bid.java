@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -19,12 +20,11 @@ import java.util.UUID;
 public class Bid {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "bid_id", updatable = false, nullable = false)
-    private UUID bidId;
+    private UUID bidId = UUID.randomUUID();
 
     @Setter
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_id", referencedColumnName = "job_id", nullable = false)
     private Job job;
 
@@ -43,9 +43,9 @@ public class Bid {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false, columnDefinition = "TIMESTAMPTZ")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 }

@@ -11,5 +11,4 @@ public class BiddingServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(BiddingServiceApplication.class, args);
     }
-
 }

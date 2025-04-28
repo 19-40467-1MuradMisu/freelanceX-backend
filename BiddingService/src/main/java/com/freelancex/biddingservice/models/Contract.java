@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
@@ -23,9 +24,8 @@ enum ContractStatus {
 public class Contract {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "contract_id", updatable = false, nullable = false)
-    private UUID contractId;
+    private UUID contractId = UUID.randomUUID();
 
     @Setter
     @OneToOne(cascade = CascadeType.ALL)
@@ -43,9 +43,9 @@ public class Contract {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false, columnDefinition = "TIMESTAMPTZ")
-    private OffsetDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
-    private OffsetDateTime updatedAt;
+    private LocalDateTime updatedAt;
 }

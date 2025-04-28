@@ -24,6 +24,6 @@ public class CreateBidRequest {
     private Double amount;
 
     @NotBlank(message = "Proposal is required")
-    @Size(max = 500, message = "Proposal should not exceed 500 characters")
+    @Size(max = 1000, message = "Proposal should not exceed 1000 characters")
     private String proposal;
 }
