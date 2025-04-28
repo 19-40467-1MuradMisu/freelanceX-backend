@@ -1,17 +1,21 @@
 package com.freelancex.biddingservice.services;
 
+import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
+import com.freelancex.biddingservice.dtos.event.user.DeleteUserEvent;
+import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import com.freelancex.biddingservice.models.User;
 import com.freelancex.biddingservice.repositories.UserRepository;
 import com.freelancex.biddingservice.services.interfaces.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
+    private final static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
 
     @Autowired
@@ -19,23 +23,39 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
+
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public void createUser(CreateUserEvent event) {
+        User user = new User();
+        user.setUserId(event.userId());
+        user.setRole(event.role());
+        user.setFirstName(event.firstName());
+        user.setLastName(event.lastName());
+
+        userRepository.save(user);
+        logger.info("User created: {}", user.getUserId());
     }
 
     @Override
-    public Optional<User> getUserById(UUID id) {
-        return userRepository.findById(id);
+    public void updateUser(UpdateUserEvent event) {
+        Optional<User> user = userRepository.findById(event.userId());
+        if (user.isPresent()) {
+            User userToUpdate = user.get();
+            userToUpdate.setFirstName(event.firstName());
+            userToUpdate.setLastName(event.lastName());
+            userToUpdate.setRole(event.role());
+            userRepository.save(userToUpdate);
+            logger.info("User updated: {}", userToUpdate.getUserId());
+        }
     }
 
     @Override
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
-
-    @Override
-    public void deleteUser(UUID id) {
-        userRepository.deleteById(id);
+    public void deleteUser(DeleteUserEvent event) {
+        Optional<User> user = userRepository.findById(event.userId());
+        if (user.isPresent()) {
+            User userToDelete = user.get();
+            userRepository.delete(userToDelete);
+            logger.info("User deleted: {}", userToDelete.getUserId());
+        }
     }
 }

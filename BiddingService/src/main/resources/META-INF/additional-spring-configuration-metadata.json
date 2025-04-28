@@ -14,5 +14,35 @@
       "name": "kafka.topics.contract-created",
       "type": "java.lang.String",
       "description": "Description for kafka.topics.contract-created."
+    },
+    {
+      "name": "kafka.topics.job-updated",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.job-updated."
+    },
+    {
+      "name": "kafka.topics.job-deleted",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.job-deleted."
+    },
+    {
+      "name": "kafka.topics.user-updated",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.user-updated."
+    },
+    {
+      "name": "kafka.topics.user-deleted",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.user-deleted."
+    },
+    {
+      "name": "kafka.topics.contract-updated",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.contract-updated."
+    },
+    {
+      "name": "kafka.topics.contract-deleted",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.contract-deleted."
     }
   ] }

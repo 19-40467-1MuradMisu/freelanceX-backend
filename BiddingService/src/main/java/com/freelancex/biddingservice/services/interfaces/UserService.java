@@ -1,17 +1,13 @@
 package com.freelancex.biddingservice.services.interfaces;
 
-import com.freelancex.biddingservice.models.User;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
+import com.freelancex.biddingservice.dtos.event.user.DeleteUserEvent;
+import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 
 public interface UserService {
-    List<User> getAllUsers();
+    void createUser(CreateUserEvent event);
 
-    Optional<User> getUserById(UUID id);
+    void updateUser(UpdateUserEvent event);
 
-    User saveUser(User user);
-
-    void deleteUser(UUID id);
+    void deleteUser(DeleteUserEvent event);
 }
