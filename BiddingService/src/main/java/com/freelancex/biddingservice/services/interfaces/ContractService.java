@@ -1,18 +1,18 @@
 package com.freelancex.biddingservice.services.interfaces;
 
+import com.freelancex.biddingservice.dtos.contract.*;
+import com.freelancex.biddingservice.exceptions.ApiException;
 
-import com.freelancex.biddingservice.models.Contract;
-
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface ContractService {
-    List<Contract> getAllContracts();
+    GetContractsResponse getAllContracts() throws ApiException;
 
-    Optional<Contract> getContractById(UUID id);
+    GetContractResponse getContractById(UUID id) throws ApiException;
 
-    Contract saveContract(Contract contract);
+    CreateContractResponse createContract(CreateContractRequest request);
 
-    void deleteContract(UUID id);
+    UpdateContractResponse updateContract(UUID id, UpdateContractRequest request) throws ApiException;
+
+    DeleteContractResponse deleteContract(UUID id);
 }

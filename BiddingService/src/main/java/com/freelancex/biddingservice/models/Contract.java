@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.models;
 
+import com.freelancex.biddingservice.enums.ContractStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.UUID;
-
-enum ContractStatus {
-    ACTIVE, COMPLETED
-}
 
 @Entity
 @Table(name = "contracts")

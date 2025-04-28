@@ -10,9 +10,9 @@ public interface BidService {
 
     GetBidResponse getBidById(UUID id) throws ApiException;
 
-    CreateBidResponse createBid(CreateBidRequest bid);
+    CreateBidResponse createBid(CreateBidRequest request);
 
-    UpdateBidResponse updateBid(UUID id, UpdateBidRequest updateBidRequest) throws ApiException;
+    UpdateBidResponse updateBid(UUID id, UpdateBidRequest request) throws ApiException;
 
     DeleteBidResponse deleteBid(UUID id);
 }

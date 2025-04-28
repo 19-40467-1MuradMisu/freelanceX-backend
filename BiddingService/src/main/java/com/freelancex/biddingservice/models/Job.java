@@ -1,15 +1,11 @@
 package com.freelancex.biddingservice.models;
 
+import com.freelancex.biddingservice.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.UUID;
-
-enum JobStatus {
-    OPEN,
-    CLOSED
-}
 
 @Entity
 @Table(name = "jobs")

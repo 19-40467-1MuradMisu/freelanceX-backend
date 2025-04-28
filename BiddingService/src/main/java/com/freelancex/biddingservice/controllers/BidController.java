@@ -1,11 +1,10 @@
 package com.freelancex.biddingservice.controllers;
 
 import com.freelancex.biddingservice.dtos.bid.*;
-import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.services.interfaces.BidService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,13 +34,13 @@ public class BidController {
     }
 
     @PostMapping()
-    public ResponseEntity<CreateBidResponse> createBid(@RequestBody CreateBidRequest request) {
+    public ResponseEntity<CreateBidResponse> createBid(@RequestBody @Valid CreateBidRequest request) {
         CreateBidResponse response = this.bidService.createBid(request);
-        return new ResponseEntity<CreateBidResponse>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UpdateBidResponse> updateBid(@PathVariable UUID id, @RequestBody UpdateBidRequest request) {
+    public ResponseEntity<UpdateBidResponse> updateBid(@PathVariable UUID id, @RequestBody @Valid UpdateBidRequest request) {
         UpdateBidResponse response = this.bidService.updateBid(id, request);
         return ResponseEntity.ok(response);
     }

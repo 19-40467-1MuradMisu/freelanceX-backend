@@ -64,7 +64,7 @@ public class BidServiceImpl implements BidService {
 
         CreateBidResponse response = new CreateBidResponse();
         response.setMessage("success");
-        response.setStatusCode(200);
+        response.setStatusCode(201);
         return response;
     }
 
@@ -87,13 +87,14 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public DeleteBidResponse deleteBid(UUID id) {
+    public DeleteBidResponse deleteBid(UUID id) throws ApiException {
         Optional<Bid> bid = bidRepository.findById(id);
+
         if (bid.isEmpty()) {
             throw new ApiException(String.format("Bid:%s not found", id), HttpStatus.NOT_FOUND);
         }
 
-        bidRepository.deleteById(bid.get().getBidId());
+        bidRepository.delete(bid.get());
 
         DeleteBidResponse response = new DeleteBidResponse();
         response.setMessage("success");
