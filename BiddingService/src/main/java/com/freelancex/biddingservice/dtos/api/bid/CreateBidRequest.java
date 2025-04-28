@@ -1,29 +1,24 @@
-package com.freelancex.biddingservice.dtos.bid;
+package com.freelancex.biddingservice.dtos.api.bid;
 
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
 import java.util.UUID;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Value
 public class CreateBidRequest {
 
     @NotNull(message = "Job ID is required")
-    private UUID jobId;
+    UUID jobId;
 
     @NotNull(message = "Freelancer ID is required")
-    private UUID freelancerId;
+    UUID freelancerId;
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")
-    private Double amount;
+    Double amount;
 
     @NotBlank(message = "Proposal is required")
     @Size(max = 1000, message = "Proposal should not exceed 1000 characters")
-    private String proposal;
+    String proposal;
 }
