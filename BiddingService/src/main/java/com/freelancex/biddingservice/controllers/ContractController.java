@@ -43,10 +43,4 @@ public class ContractController {
         UpdateContractResponse response = this.contractService.updateContract(id, request);
         return ResponseEntity.ok(response);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<DeleteContractResponse> deleteContract(@PathVariable UUID id) {
-        DeleteContractResponse response = this.contractService.deleteContract(id);
-        return ResponseEntity.ok(response);
-    }
 }

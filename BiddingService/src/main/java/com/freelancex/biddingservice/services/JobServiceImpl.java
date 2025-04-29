@@ -1,7 +1,6 @@
 package com.freelancex.biddingservice.services;
 
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
-import com.freelancex.biddingservice.dtos.event.job.DeleteJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 import com.freelancex.biddingservice.models.Job;
 import com.freelancex.biddingservice.repositories.JobRepository;
@@ -49,17 +48,6 @@ public class JobServiceImpl implements JobService {
 
             jobRepository.save(jobToUpdate);
             logger.info("Job updated: {}", jobToUpdate.getJobId());
-        }
-    }
-
-    @Override
-    public void deleteJob(DeleteJobEvent event) {
-        Optional<Job> job = jobRepository.findById(event.jobId());
-
-        if (job.isPresent()) {
-            Job jobToDelete = job.get();
-            jobRepository.delete(jobToDelete);
-            logger.info("Job deleted: {}", jobToDelete.getJobId());
         }
     }
 }

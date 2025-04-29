@@ -13,6 +13,4 @@ public interface ContractService {
     CreateContractResponse createContract(CreateContractRequest request);
 
     UpdateContractResponse updateContract(UUID id, UpdateContractRequest request) throws ApiException;
-
-    DeleteContractResponse deleteContract(UUID id);
 }

@@ -6,6 +6,4 @@ public interface KafkaProducerService {
     void sendContractCreatedEvent(CreateContractEvent event);
 
     void sendContractUpdatedEvent(CreateContractEvent event);
-
-    void sendContractDeletedEvent(CreateContractEvent event);
 }

@@ -12,7 +12,7 @@ public class CreateBidRequest {
     UUID jobId;
 
     @NotNull(message = "Freelancer ID is required")
-    UUID freelancerId;
+    UUID userId;
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")

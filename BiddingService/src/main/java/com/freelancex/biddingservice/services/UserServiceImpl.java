@@ -1,7 +1,6 @@
 package com.freelancex.biddingservice.services;
 
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
-import com.freelancex.biddingservice.dtos.event.user.DeleteUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import com.freelancex.biddingservice.models.User;
 import com.freelancex.biddingservice.repositories.UserRepository;
@@ -46,16 +45,6 @@ public class UserServiceImpl implements UserService {
             userToUpdate.setRole(event.role());
             userRepository.save(userToUpdate);
             logger.info("User updated: {}", userToUpdate.getUserId());
-        }
-    }
-
-    @Override
-    public void deleteUser(DeleteUserEvent event) {
-        Optional<User> user = userRepository.findById(event.userId());
-        if (user.isPresent()) {
-            User userToDelete = user.get();
-            userRepository.delete(userToDelete);
-            logger.info("User deleted: {}", userToDelete.getUserId());
         }
     }
 }

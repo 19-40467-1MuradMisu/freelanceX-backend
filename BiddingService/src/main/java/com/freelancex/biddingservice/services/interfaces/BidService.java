@@ -6,13 +6,16 @@ import com.freelancex.biddingservice.exceptions.ApiException;
 import java.util.UUID;
 
 public interface BidService {
-    GetBidsResponse getAllBids();
 
-    GetBidResponse getBidById(UUID id) throws ApiException;
+    GetBidsResponse getBidsByJobId(UUID jobId, UUID userId);
 
     CreateBidResponse createBid(CreateBidRequest request);
 
-    UpdateBidResponse updateBid(UUID id, UpdateBidRequest request) throws ApiException;
+    GetBidsResponse getBidsByUserId(UUID userId);
 
-    DeleteBidResponse deleteBid(UUID id);
+    GetBidResponse getBidByUserId(UUID bidId, UUID userId) throws ApiException;
+
+    UpdateBidResponse updateBidByUserId(UUID bidId, UUID userId, UpdateBidRequest request) throws ApiException;
+
+    DeleteBidResponse deleteBidByUserId(UUID bidId, UUID userId) throws ApiException;
 }

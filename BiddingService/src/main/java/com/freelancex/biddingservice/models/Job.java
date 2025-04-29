@@ -5,28 +5,36 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "jobs")
 @Getter
+@Setter
 public class Job {
 
     @Id
-    @Setter
     @Column(name = "job_id", nullable = false, updatable = false)
     private UUID jobId;
 
-    @Setter
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private JobStatus status;
 
-    @Setter
     @Column(nullable = false)
     private Double budget;
 
-    @Setter
     @Column(nullable = false)
     private String title;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private User user;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Bid> bid;
 }

@@ -3,11 +3,8 @@ package com.freelancex.biddingservice.services;
 import com.freelancex.biddingservice.dtos.api.bid.*;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.models.Bid;
-import com.freelancex.biddingservice.models.Job;
-import com.freelancex.biddingservice.models.User;
 import com.freelancex.biddingservice.repositories.BidRepository;
 import com.freelancex.biddingservice.services.interfaces.BidService;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,60 +16,69 @@ import java.util.UUID;
 @Service
 public class BidServiceImpl implements BidService {
     private final BidRepository bidRepository;
-    private final EntityManager entityManager;
 
     @Autowired
-    public BidServiceImpl(BidRepository bidRepository, EntityManager entityManager) {
+    public BidServiceImpl(BidRepository bidRepository) {
         this.bidRepository = bidRepository;
-        this.entityManager = entityManager;
     }
 
+
     @Override
-    public GetBidsResponse getAllBids() {
-        List<Bid> bids = bidRepository.findAll();
+    public GetBidsResponse getBidsByJobId(UUID jobId, UUID userId) throws ApiException {
+        List<Bid> bids = this.bidRepository.findBidsByJobIdAndJobUserId(jobId, userId);
 
         GetBidsResponse response = new GetBidsResponse(bids);
         response.setMessage("success");
-        response.setStatusCode(200);
-        return response;
-    }
-
-    @Override
-    public GetBidResponse getBidById(UUID id) throws ApiException {
-        Optional<Bid> bid = bidRepository.findById(id);
-
-        if (bid.isEmpty()) {
-            throw new ApiException(String.format("Bid:%s not found", id), HttpStatus.NOT_FOUND);
-        }
-
-        GetBidResponse response = new GetBidResponse(bid.get());
-        response.setMessage("success");
-        response.setStatusCode(200);
+        response.setStatusCode(HttpStatus.OK.value());
         return response;
     }
 
     @Override
     public CreateBidResponse createBid(CreateBidRequest request) {
         Bid bid = new Bid();
-
-        bid.setJob(entityManager.getReference(Job.class, request.getJobId()));
-        bid.setFreelancer(entityManager.getReference(User.class, request.getFreelancerId()));
+        bid.setUserId(request.getUserId());
+        bid.setJobId(request.getJobId());
         bid.setAmount(request.getAmount());
         bid.setProposal(request.getProposal());
-
         bidRepository.save(bid);
 
         CreateBidResponse response = new CreateBidResponse();
         response.setMessage("success");
-        response.setStatusCode(201);
+        response.setStatusCode(HttpStatus.CREATED.value());
         return response;
     }
 
     @Override
-    public UpdateBidResponse updateBid(UUID id, UpdateBidRequest request) throws ApiException {
-        Optional<Bid> bid = bidRepository.findById(id);
+    public GetBidResponse getBidByUserId(UUID bidId, UUID userId) throws ApiException {
+        Optional<Bid> bid = bidRepository.findBidByBidIdAndUserId(bidId, userId);
+
         if (bid.isEmpty()) {
-            throw new ApiException(String.format("Bid:%s not found", id), HttpStatus.NOT_FOUND);
+            throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
+        }
+
+        GetBidResponse response = new GetBidResponse(bid.get());
+        response.setMessage("success");
+        response.setStatusCode(HttpStatus.OK.value());
+        return response;
+    }
+
+    @Override
+    public GetBidsResponse getBidsByUserId(UUID userId) {
+        List<Bid> bids = this.bidRepository.findBidsByUserId(userId);
+
+        GetBidsResponse response = new GetBidsResponse(bids);
+        response.setMessage("success");
+        response.setStatusCode(HttpStatus.OK.value());
+        return response;
+    }
+
+    @Override
+    public UpdateBidResponse updateBidByUserId(UUID bidId, UUID userId,
+                                               UpdateBidRequest request) throws ApiException {
+        Optional<Bid> bid = bidRepository.findBidByBidIdAndUserId(bidId, userId);
+
+        if (bid.isEmpty()) {
+            throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
         }
 
         Bid bidToUpdate = bid.get();
@@ -82,23 +88,22 @@ public class BidServiceImpl implements BidService {
 
         UpdateBidResponse response = new UpdateBidResponse();
         response.setMessage("success");
-        response.setStatusCode(200);
+        response.setStatusCode(HttpStatus.OK.value());
         return response;
     }
 
     @Override
-    public DeleteBidResponse deleteBid(UUID id) throws ApiException {
-        Optional<Bid> bid = bidRepository.findById(id);
+    public DeleteBidResponse deleteBidByUserId(UUID bidId, UUID userId) throws ApiException {
+        Optional<Bid> bid = bidRepository.findBidByBidIdAndUserId(bidId, userId);
 
         if (bid.isEmpty()) {
-            throw new ApiException(String.format("Bid:%s not found", id), HttpStatus.NOT_FOUND);
+            throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
         }
 
         bidRepository.delete(bid.get());
-
         DeleteBidResponse response = new DeleteBidResponse();
         response.setMessage("success");
-        response.setStatusCode(200);
+        response.setStatusCode(HttpStatus.OK.value());
         return response;
     }
 }

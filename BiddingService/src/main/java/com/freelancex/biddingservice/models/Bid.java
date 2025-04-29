@@ -2,7 +2,6 @@ package com.freelancex.biddingservice.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,10 +11,14 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "bids")
+@Table(
+        name = "bids", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "job_id"}),
+        indexes = {
+                @Index(name = "idx_user_id", columnList = "user_id"),
+                @Index(name = "idx_job_id", columnList = "job_id")
+        })
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-@NoArgsConstructor
 public class Bid {
 
     @Id
@@ -24,14 +27,25 @@ public class Bid {
     private UUID bidId;
 
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id", referencedColumnName = "job_id", nullable = false)
+    @Column(name = "user_id", nullable = false)
+    private UUID userId;
+
+    @Setter
+    @Column(name = "job_id", nullable = false)
+    private UUID jobId;
+
+    @Setter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "job_id", referencedColumnName = "job_id", insertable = false, updatable = false)
     private Job job;
 
     @Setter
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "freelancer_id", referencedColumnName = "user_id", nullable = false)
-    private User freelancer;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private User user;
+
+    @OneToOne(mappedBy = "bid", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Contract contract;
 
     @Setter
     @Column(nullable = false)

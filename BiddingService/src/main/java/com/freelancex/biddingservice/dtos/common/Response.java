@@ -1,11 +1,10 @@
 package com.freelancex.biddingservice.dtos.common;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Builder
 public class Response {
 

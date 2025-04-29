@@ -1,10 +1,8 @@
 package com.freelancex.biddingservice.kafka.interfaces;
 
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
-import com.freelancex.biddingservice.dtos.event.job.DeleteJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
-import com.freelancex.biddingservice.dtos.event.user.DeleteUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 
@@ -22,12 +20,6 @@ public interface KafkaConsumerService {
     void consumeUserUpdatedEvent(UpdateUserEvent event);
 
     @KafkaListener(
-            topics = "${kafka.topics.user-deleted}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
-    void consumeUserDeletedEvent(DeleteUserEvent event);
-
-    @KafkaListener(
             topics = "${kafka.topics.job-created}",
             groupId = "${spring.kafka.consumer.string.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
@@ -38,10 +30,4 @@ public interface KafkaConsumerService {
             groupId = "${spring.kafka.consumer.string.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     void consumeJobUpdatedEvent(UpdateJobEvent event);
-
-    @KafkaListener(
-            topics = "${kafka.topics.job-deleted}",
-            groupId = "${spring.kafka.consumer.string.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
-    void consumeJobUpdatedEvent(DeleteJobEvent event);
 }

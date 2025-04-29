@@ -21,9 +21,6 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
     @Value("${kafka.topics.contract-updated}")
     private String contractUpdatedTopic;
 
-    @Value("${kafka.topics.contract-deleted}")
-    private String contractDeletedTopic;
-
     public KafkaProducerServiceImpl(
             @Qualifier("jsonKafkaTemplate") KafkaTemplate<String, Object> jsonKafkaTemplate) {
         this.kafkaTemplate = jsonKafkaTemplate;
@@ -37,11 +34,6 @@ public class KafkaProducerServiceImpl implements KafkaProducerService {
     @Override
     public void sendContractUpdatedEvent(CreateContractEvent event) {
         sendEvent(contractUpdatedTopic, event.contractId().toString(), event);
-    }
-
-    @Override
-    public void sendContractDeletedEvent(CreateContractEvent event) {
-        sendEvent(contractDeletedTopic, event.contractId().toString(), event);
     }
 
     private void sendEvent(String topic, String key, Object event) {

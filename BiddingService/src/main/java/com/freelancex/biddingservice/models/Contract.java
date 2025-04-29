@@ -25,8 +25,12 @@ public class Contract {
     private UUID contractId;
 
     @Setter
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid_id", referencedColumnName = "bid_id", nullable = false)
+    @Column(name = "bid_id", nullable = false)
+    private UUID bidId;
+
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bid_id", referencedColumnName = "bid_id", unique = true, insertable = false, updatable = false)
     private Bid bid;
 
     @Setter

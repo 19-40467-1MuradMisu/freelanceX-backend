@@ -89,21 +89,4 @@ public class ContractServiceImpl implements ContractService {
 
         return response;
     }
-
-    @Override
-    public DeleteContractResponse deleteContract(UUID id) {
-        Optional<Contract> contract = contractRepository.findById(id);
-
-        if (contract.isEmpty()) {
-            throw new ApiException(String.format("Contract:%s not found", id), HttpStatus.NOT_FOUND);
-        }
-
-        contractRepository.delete(contract.get());
-
-        DeleteContractResponse response = new DeleteContractResponse();
-        response.setMessage("success");
-        response.setStatusCode(200);
-
-        return response;
-    }
 }

@@ -21,15 +21,23 @@ public class BidController {
         this.bidService = bidService;
     }
 
-    @GetMapping()
-    public ResponseEntity<GetBidsResponse> getBids() {
-        GetBidsResponse response = this.bidService.getAllBids();
+    @GetMapping("/job/{jobId}/user/{userId}")
+    public ResponseEntity<GetBidsResponse> getBidByJobId(@PathVariable UUID jobId,
+                                                         @PathVariable UUID userId) {
+        GetBidsResponse response = this.bidService.getBidsByJobId(jobId, userId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetBidResponse> getBidById(@PathVariable UUID id) {
-        GetBidResponse response = this.bidService.getBidById(id);
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<GetBidsResponse> getBidsByUserId(@PathVariable UUID userId) {
+        GetBidsResponse response = this.bidService.getBidsByUserId(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("{bidId}/user/{userId}")
+    public ResponseEntity<GetBidResponse> getBidByUserId(@PathVariable UUID bidId,
+                                                         @PathVariable UUID userId) {
+        GetBidResponse response = this.bidService.getBidByUserId(bidId, userId);
         return ResponseEntity.ok(response);
     }
 
@@ -39,15 +47,18 @@ public class BidController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UpdateBidResponse> updateBid(@PathVariable UUID id, @RequestBody @Valid UpdateBidRequest request) {
-        UpdateBidResponse response = this.bidService.updateBid(id, request);
+    @PatchMapping("/{bidId}/user/{userId}")
+    public ResponseEntity<UpdateBidResponse> updateBidByUserId(@PathVariable UUID bidId,
+                                                               @PathVariable UUID userId,
+                                                               @RequestBody @Valid UpdateBidRequest request) {
+        UpdateBidResponse response = this.bidService.updateBidByUserId(bidId, userId, request);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<DeleteBidResponse> deleteBid(@PathVariable UUID id) {
-        DeleteBidResponse response = this.bidService.deleteBid(id);
+    @DeleteMapping("/{bidId}/user/{userId}")
+    public ResponseEntity<DeleteBidResponse> deleteBidByUserId(@PathVariable UUID bidId,
+                                                               @PathVariable UUID userId) {
+        DeleteBidResponse response = this.bidService.deleteBidByUserId(bidId, userId);
         return ResponseEntity.ok(response);
     }
 }
