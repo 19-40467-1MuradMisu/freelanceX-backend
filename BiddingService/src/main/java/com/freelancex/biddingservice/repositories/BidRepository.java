@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface BidRepository extends JpaRepository<Bid, UUID> {
-    List<Bid> findBidsByJobIdAndJobUserId(UUID jobId, UUID jobUserId);
+
+    List<Bid> findBidsByJobId(UUID jobId);
 
     List<Bid> findBidsByUserId(UUID userId);
 

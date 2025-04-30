@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.kafka.interfaces;
 
+import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
@@ -21,13 +22,19 @@ public interface KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
-            groupId = "${spring.kafka.consumer.string.group-id}",
+            groupId = "${spring.kafka.consumer.json.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     void consumeJobCreatedEvent(CreateJobEvent event);
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
-            groupId = "${spring.kafka.consumer.string.group-id}",
+            groupId = "${spring.kafka.consumer.json.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     void consumeJobUpdatedEvent(UpdateJobEvent event);
+
+    @KafkaListener(
+            topics = "${kafka.topics.payment-completed}",
+            groupId = "${spring.kafka.consumer.json.group-id}",
+            containerFactory = "kafkaListenerContainerFactory")
+    void consumePaymentCompletedEvent(UpdateContractEvent event);
 }

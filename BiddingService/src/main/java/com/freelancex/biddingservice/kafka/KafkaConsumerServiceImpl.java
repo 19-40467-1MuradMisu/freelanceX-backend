@@ -1,10 +1,12 @@
 package com.freelancex.biddingservice.kafka;
 
+import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import com.freelancex.biddingservice.kafka.interfaces.KafkaConsumerService;
+import com.freelancex.biddingservice.services.interfaces.ContractService;
 import com.freelancex.biddingservice.services.interfaces.JobService;
 import com.freelancex.biddingservice.services.interfaces.UserService;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -15,10 +17,13 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     private final UserService userService;
     private final JobService jobService;
+    private final ContractService contractService;
 
-    public KafkaConsumerServiceImpl(UserService userService, JobService jobService) {
+    public KafkaConsumerServiceImpl(UserService userService, JobService jobService,
+                                    ContractService contractService) {
         this.userService = userService;
         this.jobService = jobService;
+        this.contractService = contractService;
     }
 
     @KafkaListener(
@@ -41,7 +46,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
-            groupId = "${spring.kafka.consumer.string.group-id}",
+            groupId = "${spring.kafka.consumer.json.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     @Override
     public void consumeJobCreatedEvent(CreateJobEvent event) {
@@ -50,10 +55,19 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
-            groupId = "${spring.kafka.consumer.string.group-id}",
+            groupId = "${spring.kafka.consumer.json.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     @Override
     public void consumeJobUpdatedEvent(UpdateJobEvent event) {
         this.jobService.updateJob(event);
+    }
+
+    @KafkaListener(
+            topics = "${kafka.topics.payment.completed",
+            groupId = "${spring.kafka.consumer.json.group-id}",
+            containerFactory = "kafkaListenerContainerFactory")
+    @Override
+    public void consumePaymentCompletedEvent(UpdateContractEvent event) {
+        this.contractService.updateContractStatus(event);
     }
 }

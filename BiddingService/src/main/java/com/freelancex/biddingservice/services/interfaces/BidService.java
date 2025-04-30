@@ -7,9 +7,9 @@ import java.util.UUID;
 
 public interface BidService {
 
-    GetBidsResponse getBidsByJobId(UUID jobId, UUID userId);
-
     CreateBidResponse createBid(CreateBidRequest request);
+
+    GetBidsResponse getBidsByJobId(UUID jobId);
 
     GetBidsResponse getBidsByUserId(UUID userId);
 

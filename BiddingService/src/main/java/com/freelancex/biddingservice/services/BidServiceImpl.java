@@ -4,6 +4,7 @@ import com.freelancex.biddingservice.dtos.api.bid.*;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.models.Bid;
 import com.freelancex.biddingservice.repositories.BidRepository;
+import com.freelancex.biddingservice.repositories.ContractRepository;
 import com.freelancex.biddingservice.services.interfaces.BidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,16 +17,17 @@ import java.util.UUID;
 @Service
 public class BidServiceImpl implements BidService {
     private final BidRepository bidRepository;
+    private final ContractRepository contractRepository;
 
     @Autowired
-    public BidServiceImpl(BidRepository bidRepository) {
+    public BidServiceImpl(BidRepository bidRepository, ContractRepository contractRepository) {
         this.bidRepository = bidRepository;
+        this.contractRepository = contractRepository;
     }
 
-
     @Override
-    public GetBidsResponse getBidsByJobId(UUID jobId, UUID userId) throws ApiException {
-        List<Bid> bids = this.bidRepository.findBidsByJobIdAndJobUserId(jobId, userId);
+    public GetBidsResponse getBidsByJobId(UUID jobId) {
+        List<Bid> bids = this.bidRepository.findBidsByJobId(jobId);
 
         GetBidsResponse response = new GetBidsResponse(bids);
         response.setMessage("success");
@@ -98,6 +100,12 @@ public class BidServiceImpl implements BidService {
 
         if (bid.isEmpty()) {
             throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
+        }
+
+        boolean contractExists = contractRepository.existsContractByBidId(bidId);
+
+        if (contractExists) {
+            throw new ApiException("A contract already exists for this bid", HttpStatus.FORBIDDEN);
         }
 
         bidRepository.delete(bid.get());

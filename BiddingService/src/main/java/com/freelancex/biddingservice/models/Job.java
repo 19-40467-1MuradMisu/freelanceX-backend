@@ -37,4 +37,7 @@ public class Job {
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Bid> bid;
+
+    @OneToOne(mappedBy = "job", cascade = CascadeType.ALL)
+    private Contract contract;
 }

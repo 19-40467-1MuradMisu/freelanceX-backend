@@ -21,10 +21,9 @@ public class BidController {
         this.bidService = bidService;
     }
 
-    @GetMapping("/job/{jobId}/user/{userId}")
-    public ResponseEntity<GetBidsResponse> getBidByJobId(@PathVariable UUID jobId,
-                                                         @PathVariable UUID userId) {
-        GetBidsResponse response = this.bidService.getBidsByJobId(jobId, userId);
+    @GetMapping("/job/{jobId}")
+    public ResponseEntity<GetBidsResponse> getBidByJobId(@PathVariable UUID jobId) {
+        GetBidsResponse response = this.bidService.getBidsByJobId(jobId);
         return ResponseEntity.ok(response);
     }
 

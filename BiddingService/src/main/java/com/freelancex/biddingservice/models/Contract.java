@@ -29,9 +29,22 @@ public class Contract {
     private UUID bidId;
 
     @Setter
+    @Column(name = "job_id", nullable = false)
+    private UUID jobId;
+
+    @Setter
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bid_id", referencedColumnName = "bid_id", unique = true, insertable = false, updatable = false)
+    @JoinColumn(
+            name = "bid_id", referencedColumnName = "bid_id", unique = true, insertable = false,
+            updatable = false)
     private Bid bid;
+
+    @Setter
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "job_id", referencedColumnName = "job_id", unique = true, insertable = false,
+            updatable = false)
+    private Job job;
 
     @Setter
     @Column(nullable = false, length = 500)

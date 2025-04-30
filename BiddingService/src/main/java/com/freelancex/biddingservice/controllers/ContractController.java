@@ -20,27 +20,46 @@ public class ContractController {
         this.contractService = contractService;
     }
 
-    @GetMapping()
-    public ResponseEntity<GetContractsResponse> getContract() {
-        GetContractsResponse response = this.contractService.getAllContracts();
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<GetContractsResponse> getContractsByUserId(@PathVariable("userId") UUID userId) {
+        GetContractsResponse response = this.contractService.getContractsByUserId(userId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<GetContractResponse> getContractById(@PathVariable UUID id) {
-        GetContractResponse response = this.contractService.getContractById(id);
+    @GetMapping("/{id}/user/{userId}")
+    public ResponseEntity<GetContractResponse> getContractByUserId(@PathVariable("id") UUID id,
+                                                                   @PathVariable("userId") UUID userId) {
+        GetContractResponse response = this.contractService.getContractByUserId(id, userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/client/{clientId}")
+    public ResponseEntity<GetContractsResponse> getContractsByClientId(
+            @PathVariable("clientId") UUID clientId) {
+        GetContractsResponse response = this.contractService.getContractsByClientId(clientId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("{id}/client/{clientId}")
+    public ResponseEntity<GetContractResponse> getContractByClientId(@PathVariable("id") UUID id,
+                                                                     @PathVariable(
+                                                                             "clientId") UUID clientId) {
+        GetContractResponse response = this.contractService.getContractByClientId(id, clientId);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping()
-    public ResponseEntity<CreateContractResponse> createContract(@RequestBody @Valid CreateContractRequest request) {
+    public ResponseEntity<CreateContractResponse> createContract(
+            @RequestBody @Valid CreateContractRequest request) {
         CreateContractResponse response = this.contractService.createContract(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<UpdateContractResponse> updateContract(@PathVariable UUID id, @RequestBody @Valid UpdateContractRequest request) {
-        UpdateContractResponse response = this.contractService.updateContract(id, request);
+    @PatchMapping("/{id}/client/{clientId}")
+    public ResponseEntity<UpdateContractResponse> updateContract(@PathVariable("id") UUID id,
+                                                                 @PathVariable("clientId") UUID clientId,
+                                                                 @RequestBody @Valid UpdateContractRequest request) {
+        UpdateContractResponse response = this.contractService.updateContractTerms(id, clientId, request);
         return ResponseEntity.ok(response);
     }
 }
