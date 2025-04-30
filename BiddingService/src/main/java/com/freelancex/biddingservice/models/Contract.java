@@ -51,7 +51,7 @@ public class Contract {
     private String terms;
 
     @Setter
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private ContractStatus status = ContractStatus.ACTIVE;
 

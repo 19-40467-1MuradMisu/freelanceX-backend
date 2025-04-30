@@ -11,30 +11,30 @@ public interface KafkaConsumerService {
     @KafkaListener(
             topics = "${kafka.topics.user-created}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     void consumeUserCreatedEvent(CreateUserEvent event);
 
     @KafkaListener(
             topics = "${kafka.topics.user-updated}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     void consumeUserUpdatedEvent(UpdateUserEvent event);
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     void consumeJobCreatedEvent(CreateJobEvent event);
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     void consumeJobUpdatedEvent(UpdateJobEvent event);
 
     @KafkaListener(
             topics = "${kafka.topics.payment-completed}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     void consumePaymentCompletedEvent(UpdateContractEvent event);
 }

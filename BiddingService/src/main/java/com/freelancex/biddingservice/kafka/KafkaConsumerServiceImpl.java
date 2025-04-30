@@ -9,6 +9,7 @@ import com.freelancex.biddingservice.kafka.interfaces.KafkaConsumerService;
 import com.freelancex.biddingservice.services.interfaces.ContractService;
 import com.freelancex.biddingservice.services.interfaces.JobService;
 import com.freelancex.biddingservice.services.interfaces.UserService;
+import jakarta.validation.Valid;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -29,45 +30,46 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
     @KafkaListener(
             topics = "${kafka.topics.user-created}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     @Override
-    public void consumeUserCreatedEvent(CreateUserEvent event) {
+    public void consumeUserCreatedEvent(@Valid CreateUserEvent event) {
         this.userService.createUser(event);
     }
 
     @KafkaListener(
             topics = "${kafka.topics.user-updated}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler"
+    )
     @Override
-    public void consumeUserUpdatedEvent(UpdateUserEvent event) {
+    public void consumeUserUpdatedEvent(@Valid UpdateUserEvent event) {
         this.userService.updateUser(event);
     }
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     @Override
-    public void consumeJobCreatedEvent(CreateJobEvent event) {
+    public void consumeJobCreatedEvent(@Valid CreateJobEvent event) {
         this.jobService.createJob(event);
     }
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     @Override
-    public void consumeJobUpdatedEvent(UpdateJobEvent event) {
+    public void consumeJobUpdatedEvent(@Valid UpdateJobEvent event) {
         this.jobService.updateJob(event);
     }
 
     @KafkaListener(
-            topics = "${kafka.topics.payment.completed",
+            topics = "${kafka.topics.payment-completed}",
             groupId = "${spring.kafka.consumer.json.group-id}",
-            containerFactory = "kafkaListenerContainerFactory")
+            errorHandler = "validationErrorHandler")
     @Override
-    public void consumePaymentCompletedEvent(UpdateContractEvent event) {
+    public void consumePaymentCompletedEvent(@Valid UpdateContractEvent event) {
         this.contractService.updateContractStatus(event);
     }
 }

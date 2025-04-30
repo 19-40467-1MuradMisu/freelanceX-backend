@@ -13,5 +13,7 @@ public interface BidRepository extends JpaRepository<Bid, UUID> {
 
     List<Bid> findBidsByUserId(UUID userId);
 
-    Optional<Bid> findBidByBidIdAndUserId(UUID bidId, UUID userId);
+    Optional<Bid> findByBidIdAndUserId(UUID bidId, UUID userId);
+
+    Optional<Bid> findByUserIdAndJobId(UUID userId, UUID jobId);
 }

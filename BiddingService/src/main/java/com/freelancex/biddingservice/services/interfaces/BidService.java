@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface BidService {
 
-    CreateBidResponse createBid(CreateBidRequest request);
+    CreateBidResponse createBid(CreateBidRequest request) throws ApiException;
 
     GetBidsResponse getBidsByJobId(UUID jobId);
 

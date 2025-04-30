@@ -86,7 +86,7 @@ public class ContractServiceImpl implements ContractService {
                 request.getJobId());
 
         if (bidExists) {
-            throw new ApiException("Contract already exists", HttpStatus.CONFLICT);
+            throw new ApiException("Contract already exists for this job", HttpStatus.CONFLICT);
         }
 
         Contract contract = new Contract();

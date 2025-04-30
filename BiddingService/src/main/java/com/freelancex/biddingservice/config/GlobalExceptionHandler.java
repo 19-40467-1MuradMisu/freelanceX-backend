@@ -1,4 +1,4 @@
-package com.freelancex.biddingservice.utils;
+package com.freelancex.biddingservice.config;
 
 import com.freelancex.biddingservice.dtos.common.Response;
 import com.freelancex.biddingservice.exceptions.ApiException;

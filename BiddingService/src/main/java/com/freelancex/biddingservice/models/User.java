@@ -24,6 +24,7 @@ public class User {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
     private UserRole role;
 
