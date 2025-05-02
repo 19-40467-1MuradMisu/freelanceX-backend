@@ -1,6 +1,7 @@
 package com.freelancex.biddingservice.services;
 
-import com.freelancex.biddingservice.dtos.api.bid.*;
+import com.freelancex.biddingservice.dtos.api.bid.CreateBidRequest;
+import com.freelancex.biddingservice.dtos.api.bid.UpdateBidRequest;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.models.Bid;
 import com.freelancex.biddingservice.models.Job;
@@ -31,17 +32,13 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public GetBidsResponse getBidsByJobId(UUID jobId) {
-        List<Bid> bids = this.bidRepository.findBidsByJobId(jobId);
+    public List<Bid> getBidsByJobId(UUID jobId) {
 
-        GetBidsResponse response = new GetBidsResponse(bids);
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return this.bidRepository.findBidsByJobId(jobId);
     }
 
     @Override
-    public CreateBidResponse createBid(CreateBidRequest request) throws ApiException {
+    public void createBid(CreateBidRequest request) throws ApiException {
         Optional<Bid> bidOptional = this.bidRepository.findByUserIdAndJobId(request.getUserId(),
                 request.getJobId());
 
@@ -67,39 +64,27 @@ public class BidServiceImpl implements BidService {
         bid.setAmount(request.getAmount());
         bid.setProposal(request.getProposal());
         bidRepository.save(bid);
-
-        CreateBidResponse response = new CreateBidResponse();
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.CREATED.value());
-        return response;
     }
 
     @Override
-    public GetBidResponse getBidByUserId(UUID bidId, UUID userId) throws ApiException {
+    public Bid getBidByUserId(UUID bidId, UUID userId) throws ApiException {
         Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
 
         if (bid.isEmpty()) {
             throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
         }
 
-        GetBidResponse response = new GetBidResponse(bid.get());
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return bid.get();
     }
 
     @Override
-    public GetBidsResponse getBidsByUserId(UUID userId) {
-        List<Bid> bids = this.bidRepository.findBidsByUserId(userId);
+    public List<Bid> getBidsByUserId(UUID userId) {
 
-        GetBidsResponse response = new GetBidsResponse(bids);
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return this.bidRepository.findBidsByUserId(userId);
     }
 
     @Override
-    public UpdateBidResponse updateBidByUserId(UUID bidId, UUID userId,
+    public void updateBidByUserId(UUID bidId, UUID userId,
                                                UpdateBidRequest request) throws ApiException {
         Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
 
@@ -111,15 +96,10 @@ public class BidServiceImpl implements BidService {
         bidToUpdate.setAmount(request.getAmount());
         bidToUpdate.setProposal(request.getProposal());
         bidRepository.save(bidToUpdate);
-
-        UpdateBidResponse response = new UpdateBidResponse();
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
     }
 
     @Override
-    public DeleteBidResponse deleteBidByUserId(UUID bidId, UUID userId) throws ApiException {
+    public void deleteBidByUserId(UUID bidId, UUID userId) throws ApiException {
         Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
 
         if (bid.isEmpty()) {
@@ -133,9 +113,5 @@ public class BidServiceImpl implements BidService {
         }
 
         bidRepository.delete(bid.get());
-        DeleteBidResponse response = new DeleteBidResponse();
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
     }
 }

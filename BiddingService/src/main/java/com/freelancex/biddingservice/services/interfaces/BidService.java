@@ -1,21 +1,24 @@
 package com.freelancex.biddingservice.services.interfaces;
 
-import com.freelancex.biddingservice.dtos.api.bid.*;
+import com.freelancex.biddingservice.dtos.api.bid.CreateBidRequest;
+import com.freelancex.biddingservice.dtos.api.bid.UpdateBidRequest;
 import com.freelancex.biddingservice.exceptions.ApiException;
+import com.freelancex.biddingservice.models.Bid;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface BidService {
 
-    CreateBidResponse createBid(CreateBidRequest request) throws ApiException;
+    void createBid(CreateBidRequest request) throws ApiException;
 
-    GetBidsResponse getBidsByJobId(UUID jobId);
+    List<Bid> getBidsByJobId(UUID jobId);
 
-    GetBidsResponse getBidsByUserId(UUID userId);
+    List<Bid> getBidsByUserId(UUID userId);
 
-    GetBidResponse getBidByUserId(UUID bidId, UUID userId) throws ApiException;
+    Bid getBidByUserId(UUID bidId, UUID userId) throws ApiException;
 
-    UpdateBidResponse updateBidByUserId(UUID bidId, UUID userId, UpdateBidRequest request) throws ApiException;
+    void updateBidByUserId(UUID bidId, UUID userId, UpdateBidRequest request) throws ApiException;
 
-    DeleteBidResponse deleteBidByUserId(UUID bidId, UUID userId) throws ApiException;
+    void deleteBidByUserId(UUID bidId, UUID userId) throws ApiException;
 }

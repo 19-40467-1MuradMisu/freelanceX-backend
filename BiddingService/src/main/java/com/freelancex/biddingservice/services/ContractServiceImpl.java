@@ -1,6 +1,7 @@
 package com.freelancex.biddingservice.services;
 
-import com.freelancex.biddingservice.dtos.api.contract.*;
+import com.freelancex.biddingservice.dtos.api.contract.CreateContractRequest;
+import com.freelancex.biddingservice.dtos.api.contract.UpdateContractRequest;
 import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
 import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
 import com.freelancex.biddingservice.exceptions.ApiException;
@@ -32,41 +33,30 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public GetContractsResponse getContractsByUserId(UUID userId) {
-        List<Contract> contracts = contractRepository.findByBidUserId(userId);
+    public List<Contract> getContractsByUserId(UUID userId) {
 
-        GetContractsResponse response = new GetContractsResponse(contracts);
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return contractRepository.findByBidUserId(userId);
     }
 
     @Override
-    public GetContractResponse getContractByUserId(UUID contractId, UUID userId) {
+    public Contract getContractByUserId(UUID contractId, UUID userId) {
         Optional<Contract> contract = contractRepository.findByContractIdAndBidUserId(contractId, userId);
 
         if (contract.isEmpty()) {
             throw new ApiException("Contract not found", HttpStatus.NOT_FOUND);
         }
 
-        GetContractResponse response = new GetContractResponse(contract.get());
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return contract.get();
     }
 
     @Override
-    public GetContractsResponse getContractsByClientId(UUID clientId) {
-        List<Contract> contracts = contractRepository.findContractByJobUserId(clientId);
+    public List<Contract> getContractsByClientId(UUID clientId) {
 
-        GetContractsResponse response = new GetContractsResponse(contracts);
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return contractRepository.findContractByJobUserId(clientId);
     }
 
     @Override
-    public GetContractResponse getContractByClientId(UUID contractId, UUID clientId) throws ApiException {
+    public Contract getContractByClientId(UUID contractId, UUID clientId) throws ApiException {
         Optional<Contract> contract = contractRepository.findContractByContractIdAndJobUserId(contractId,
                 clientId);
 
@@ -74,14 +64,11 @@ public class ContractServiceImpl implements ContractService {
             throw new ApiException("Contract does not exists", HttpStatus.NOT_FOUND);
         }
 
-        GetContractResponse response = new GetContractResponse(contract.get());
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
+        return contract.get();
     }
 
     @Override
-    public CreateContractResponse createContract(CreateContractRequest request) throws ApiException {
+    public void createContract(CreateContractRequest request) throws ApiException {
         boolean bidExists = contractRepository.existsContractByBidIdOrJobId(request.getBidId(),
                 request.getJobId());
 
@@ -99,15 +86,10 @@ public class ContractServiceImpl implements ContractService {
         CreateContractEvent event = new CreateContractEvent(savedContract.getContractId(),
                 savedContract.getStatus());
         this.kafkaProducerService.sendContractCreatedEvent(event);
-
-        CreateContractResponse response = new CreateContractResponse();
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.CREATED.value());
-        return response;
     }
 
     @Override
-    public UpdateContractResponse updateContractTerms(UUID contractId, UUID clientId,
+    public void updateContractTerms(UUID contractId, UUID clientId,
                                                       UpdateContractRequest request) throws ApiException {
         Optional<Contract> contract = contractRepository.findContractByContractIdAndJobUserId(contractId,
                 clientId);
@@ -119,11 +101,6 @@ public class ContractServiceImpl implements ContractService {
         Contract contractToUpdate = contract.get();
         contractToUpdate.setTerms(request.getTerms());
         contractRepository.save(contractToUpdate);
-
-        UpdateContractResponse response = new UpdateContractResponse();
-        response.setMessage("success");
-        response.setStatusCode(HttpStatus.OK.value());
-        return response;
     }
 
     @Override

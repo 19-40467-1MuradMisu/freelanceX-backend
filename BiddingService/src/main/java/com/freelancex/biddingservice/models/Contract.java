@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freelancex.biddingservice.enums.ContractStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class Contract {
     @Column(name = "job_id", nullable = false)
     private UUID jobId;
 
+    @JsonIgnore
     @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(
@@ -39,6 +41,7 @@ public class Contract {
             updatable = false)
     private Bid bid;
 
+    @JsonIgnore
     @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(

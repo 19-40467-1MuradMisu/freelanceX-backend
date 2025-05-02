@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,18 +35,17 @@ public class Bid {
     @Column(name = "job_id", nullable = false)
     private UUID jobId;
 
+    @JsonIgnore
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "job_id", referencedColumnName = "job_id", insertable = false, updatable = false)
     private Job job;
 
+    @JsonIgnore
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private User user;
-
-    @OneToOne(mappedBy = "bid", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Contract contract;
 
     @Setter
     @Column(nullable = false)
