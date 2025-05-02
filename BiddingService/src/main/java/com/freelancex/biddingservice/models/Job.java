@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.freelancex.biddingservice.enums.JobStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private User user;
