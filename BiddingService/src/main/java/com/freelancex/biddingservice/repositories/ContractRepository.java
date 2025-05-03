@@ -11,15 +11,11 @@ import java.util.UUID;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, UUID> {
 
-    List<Contract> findByBidUserId(UUID userId);
+    List<Contract> findByBidFreelancerId(UUID freelancerId);
 
-    Optional<Contract> findByContractIdAndBidUserId(UUID contractId, UUID bidUserId);
+    List<Contract> findByJobClientId(UUID clientId);
 
-    Optional<Contract> findContractByContractIdAndJobUserId(UUID contractId, UUID clientId);
+    Optional<Contract> findByJobIdOrBidId(UUID jobId, UUID bidId);
 
-    List<Contract> findContractByJobUserId(UUID clientId);
-
-    boolean existsContractByBidId(UUID bidId);
-
-    boolean existsContractByBidIdOrJobId(UUID bidId, UUID jobId);
+    Optional<Contract> findByContractIdAndJobClientId(UUID contractId, UUID clientId);
 }

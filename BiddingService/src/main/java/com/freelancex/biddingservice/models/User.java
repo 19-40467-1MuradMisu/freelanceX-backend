@@ -1,7 +1,7 @@
 package com.freelancex.biddingservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.freelancex.biddingservice.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.freelancex.biddingservice.views.Views;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +12,9 @@ import java.util.UUID;
 @Table(name = "users")
 @Getter
 @Setter
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@JsonView({Views.BaseView.class})
 public class User {
 
     @Id
@@ -24,9 +26,6 @@ public class User {
 
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 50)
-    private UserRole role;
 }
+
 

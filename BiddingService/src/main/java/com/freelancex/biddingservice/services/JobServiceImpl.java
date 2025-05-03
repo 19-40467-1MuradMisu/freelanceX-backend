@@ -29,7 +29,7 @@ public class JobServiceImpl implements JobService {
         job.setJobId(event.jobId());
         job.setBudget(event.budget());
         job.setTitle(event.title());
-        job.setUserId(event.userId());
+        job.setClientId(event.clientId());
         job.setStatus(event.status());
 
         jobRepository.save(job);

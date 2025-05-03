@@ -1,6 +1,7 @@
 package com.freelancex.biddingservice.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.freelancex.biddingservice.views.Views;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,54 +13,58 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(
-        name = "bids", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "job_id"}),
-        indexes = {
-                @Index(name = "idx_user_id", columnList = "user_id"),
-                @Index(name = "idx_job_id", columnList = "job_id")
-        })
+@Table(name = "bids", uniqueConstraints = @UniqueConstraint(columnNames = {"freelancer_id", "job_id"}))
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 public class Bid {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "bid_id", updatable = false, nullable = false)
+    @Column(name = "bid_id", nullable = false)
+    @JsonView(Views.BaseView.class)
     private UUID bidId;
 
     @Setter
-    @Column(name = "user_id", nullable = false)
-    private UUID userId;
+    @Column(name = "freelancer_id", nullable = false)
+    @JsonView(Views.BaseView.class)
+    private UUID freelancerId;
 
     @Setter
     @Column(name = "job_id", nullable = false)
+    @JsonView({Views.ClientBidView.class, Views.FreelancerBidView.class})
     private UUID jobId;
 
-    @JsonIgnore
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "job_id", referencedColumnName = "job_id", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "job_id", insertable = false, updatable = false)
+    @JsonView({Views.ClientBidView.class, Views.FreelancerBidView.class})
     private Job job;
 
-    @JsonIgnore
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
-    private User user;
+    @ManyToOne
+    @JoinColumn(name = "freelancer_id", insertable = false, updatable = false)
+    @JsonView({Views.ClientBidView.class, Views.FreelancerBidView.class})
+    private Freelancer freelancer;
+
+    @OneToOne(mappedBy = "bid", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonView({Views.ClientBidView.class, Views.FreelancerBidView.class})
+    private Contract contract;
 
     @Setter
     @Column(nullable = false)
+    @JsonView(Views.BaseView.class)
     private Double amount;
 
     @Setter
     @Column(nullable = false, length = 1000)
+    @JsonView({Views.ClientBidView.class, Views.FreelancerBidView.class})
     private String proposal;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, nullable = false, columnDefinition = "TIMESTAMPTZ")
+    @JsonView(Views.BaseView.class)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false, columnDefinition = "TIMESTAMPTZ")
+    @JsonView(Views.BaseView.class)
     private LocalDateTime updatedAt;
 }

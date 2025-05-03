@@ -3,7 +3,7 @@ package com.freelancex.biddingservice.services;
 import com.freelancex.biddingservice.dtos.api.contract.CreateContractRequest;
 import com.freelancex.biddingservice.dtos.api.contract.UpdateContractRequest;
 import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
-import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
+import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.kafka.interfaces.KafkaProducerService;
 import com.freelancex.biddingservice.models.Contract;
@@ -33,14 +33,21 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> getContractsByUserId(UUID userId) {
+    public List<Contract> getContractsByFreelancerId(UUID freelancerId) {
 
-        return contractRepository.findByBidUserId(userId);
+        return contractRepository.findByBidFreelancerId(freelancerId);
     }
 
     @Override
-    public Contract getContractByUserId(UUID contractId, UUID userId) {
-        Optional<Contract> contract = contractRepository.findByContractIdAndBidUserId(contractId, userId);
+    public List<Contract> getContractsByClientId(UUID clientId) {
+
+        return contractRepository.findByJobClientId(clientId);
+    }
+
+    @Override
+    public Contract getContractByClientId(UUID contractId, UUID clientId) throws ApiException {
+        Optional<Contract> contract = contractRepository.findByContractIdAndJobClientId(contractId,
+                clientId);
 
         if (contract.isEmpty()) {
             throw new ApiException("Contract not found", HttpStatus.NOT_FOUND);
@@ -50,30 +57,12 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public List<Contract> getContractsByClientId(UUID clientId) {
-
-        return contractRepository.findContractByJobUserId(clientId);
-    }
-
-    @Override
-    public Contract getContractByClientId(UUID contractId, UUID clientId) throws ApiException {
-        Optional<Contract> contract = contractRepository.findContractByContractIdAndJobUserId(contractId,
-                clientId);
-
-        if (contract.isEmpty()) {
-            throw new ApiException("Contract does not exists", HttpStatus.NOT_FOUND);
-        }
-
-        return contract.get();
-    }
-
-    @Override
     public void createContract(CreateContractRequest request) throws ApiException {
-        boolean bidExists = contractRepository.existsContractByBidIdOrJobId(request.getBidId(),
-                request.getJobId());
+        Optional<Contract> existingContract = contractRepository.findByJobIdOrBidId(request.getJobId(),
+                request.getBidId());
 
-        if (bidExists) {
-            throw new ApiException("Contract already exists for this job", HttpStatus.CONFLICT);
+        if (existingContract.isPresent()) {
+            throw new ApiException("Contract already exists", HttpStatus.CONFLICT);
         }
 
         Contract contract = new Contract();
@@ -91,11 +80,11 @@ public class ContractServiceImpl implements ContractService {
     @Override
     public void updateContractTerms(UUID contractId, UUID clientId,
                                                       UpdateContractRequest request) throws ApiException {
-        Optional<Contract> contract = contractRepository.findContractByContractIdAndJobUserId(contractId,
+        Optional<Contract> contract = contractRepository.findByContractIdAndJobClientId(contractId,
                 clientId);
 
         if (contract.isEmpty()) {
-            throw new ApiException("Contract does not exists", HttpStatus.NOT_FOUND);
+            throw new ApiException("Contract not found", HttpStatus.NOT_FOUND);
         }
 
         Contract contractToUpdate = contract.get();
@@ -104,7 +93,7 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
-    public void updateContractStatus(UpdateContractEvent event) {
+    public void updateContractStatus(CompletePaymentEvent event) {
         Optional<Contract> contract = contractRepository.findById(event.contractId());
 
         if (contract.isPresent()) {

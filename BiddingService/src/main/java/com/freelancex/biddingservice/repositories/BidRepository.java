@@ -11,11 +11,11 @@ import java.util.UUID;
 @Repository
 public interface BidRepository extends JpaRepository<Bid, UUID> {
 
-    List<Bid> findBidsByJobId(UUID jobId);
+    List<Bid> findByJobId(UUID jobId);
 
-    List<Bid> findBidsByUserId(UUID userId);
+    List<Bid> findByFreelancerId(UUID freelancerId);
 
-    Optional<Bid> findByBidIdAndUserId(UUID bidId, UUID userId);
+    Optional<Bid> findByBidIdAndFreelancerId(UUID bidId, UUID freelancerId);
 
-    Optional<Bid> findByUserIdAndJobId(UUID userId, UUID jobId);
+    Optional<Bid> findByFreelancerIdAndJobId(UUID freelancerId, UUID jobId);
 }

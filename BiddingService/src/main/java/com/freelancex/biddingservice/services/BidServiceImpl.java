@@ -4,10 +4,7 @@ import com.freelancex.biddingservice.dtos.api.bid.CreateBidRequest;
 import com.freelancex.biddingservice.dtos.api.bid.UpdateBidRequest;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.models.Bid;
-import com.freelancex.biddingservice.models.Job;
 import com.freelancex.biddingservice.repositories.BidRepository;
-import com.freelancex.biddingservice.repositories.ContractRepository;
-import com.freelancex.biddingservice.repositories.JobRepository;
 import com.freelancex.biddingservice.services.interfaces.BidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,46 +17,28 @@ import java.util.UUID;
 @Service
 public class BidServiceImpl implements BidService {
     private final BidRepository bidRepository;
-    private final ContractRepository contractRepository;
-    private final JobRepository jobRepository;
 
     @Autowired
-    public BidServiceImpl(BidRepository bidRepository, ContractRepository contractRepository,
-                          JobRepository jobRepository) {
+    public BidServiceImpl(BidRepository bidRepository) {
         this.bidRepository = bidRepository;
-        this.contractRepository = contractRepository;
-        this.jobRepository = jobRepository;
     }
 
     @Override
     public List<Bid> getBidsByJobId(UUID jobId) {
-
-        return this.bidRepository.findBidsByJobId(jobId);
+        return this.bidRepository.findByJobId(jobId);
     }
 
     @Override
     public void createBid(CreateBidRequest request) throws ApiException {
-        Optional<Bid> bidOptional = this.bidRepository.findByUserIdAndJobId(request.getUserId(),
+        Optional<Bid> bidOptional = this.bidRepository.findByFreelancerIdAndJobId(request.getFreelancerId(),
                 request.getJobId());
 
         if (bidOptional.isPresent()) {
             throw new ApiException("Bid already exists for this job", HttpStatus.CONFLICT);
         }
 
-        Optional<Job> jobOptional = this.jobRepository.findById(request.getJobId());
-
-        if (jobOptional.isEmpty()) {
-            throw new ApiException("Job does not exists", HttpStatus.NOT_FOUND);
-        }
-
-        Job job = jobOptional.get();
-
-        if (request.getAmount() > job.getBudget()) {
-            throw new ApiException("Amount exceeds budget", HttpStatus.BAD_REQUEST);
-        }
-
         Bid bid = new Bid();
-        bid.setUserId(request.getUserId());
+        bid.setFreelancerId(request.getFreelancerId());
         bid.setJobId(request.getJobId());
         bid.setAmount(request.getAmount());
         bid.setProposal(request.getProposal());
@@ -67,8 +46,8 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public Bid getBidByUserId(UUID bidId, UUID userId) throws ApiException {
-        Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
+    public Bid getBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException {
+        Optional<Bid> bid = bidRepository.findByBidIdAndFreelancerId(bidId, freelancerId);
 
         if (bid.isEmpty()) {
             throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
@@ -78,15 +57,15 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public List<Bid> getBidsByUserId(UUID userId) {
+    public List<Bid> getBidsByFreelancerId(UUID freelancerId) {
 
-        return this.bidRepository.findBidsByUserId(userId);
+        return this.bidRepository.findByFreelancerId(freelancerId);
     }
 
     @Override
-    public void updateBidByUserId(UUID bidId, UUID userId,
+    public void updateBidByFreelancerId(UUID bidId, UUID freelancerId,
                                                UpdateBidRequest request) throws ApiException {
-        Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
+        Optional<Bid> bid = bidRepository.findByBidIdAndFreelancerId(bidId, freelancerId);
 
         if (bid.isEmpty()) {
             throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
@@ -99,19 +78,19 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
-    public void deleteBidByUserId(UUID bidId, UUID userId) throws ApiException {
-        Optional<Bid> bid = bidRepository.findByBidIdAndUserId(bidId, userId);
+    public void deleteBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException {
+        Optional<Bid> optionalBid = bidRepository.findByBidIdAndFreelancerId(bidId, freelancerId);
 
-        if (bid.isEmpty()) {
+        if (optionalBid.isEmpty()) {
             throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
         }
 
-        boolean contractExists = contractRepository.existsContractByBidId(bidId);
+        Bid bid = optionalBid.get();
 
-        if (contractExists) {
+        if (bid.getContract() != null) {
             throw new ApiException("A contract already exists for this bid", HttpStatus.FORBIDDEN);
         }
 
-        bidRepository.delete(bid.get());
+        bidRepository.delete(bid);
     }
 }

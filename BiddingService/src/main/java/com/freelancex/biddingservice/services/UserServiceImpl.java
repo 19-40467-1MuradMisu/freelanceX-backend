@@ -2,6 +2,9 @@ package com.freelancex.biddingservice.services;
 
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
+import com.freelancex.biddingservice.enums.UserRole;
+import com.freelancex.biddingservice.models.Client;
+import com.freelancex.biddingservice.models.Freelancer;
 import com.freelancex.biddingservice.models.User;
 import com.freelancex.biddingservice.repositories.UserRepository;
 import com.freelancex.biddingservice.services.interfaces.UserService;
@@ -25,14 +28,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createUser(CreateUserEvent event) {
-        User user = new User();
-        user.setUserId(event.userId());
-        user.setRole(event.role());
-        user.setFirstName(event.firstName());
-        user.setLastName(event.lastName());
+        if (event.role() == UserRole.CLIENT) {
+            Client client = new Client();
+            client.setUserId(event.userId());
+            client.setFirstName(event.firstName());
+            client.setLastName(event.lastName());
 
-        userRepository.save(user);
-        logger.info("User created: {}", user.getUserId());
+            userRepository.save(client);
+        } else {
+            Freelancer freelancer = new Freelancer();
+            freelancer.setUserId(event.userId());
+            freelancer.setFirstName(event.firstName());
+            freelancer.setLastName(event.lastName());
+
+            userRepository.save(freelancer);
+        }
+        logger.info("User created: {}", event.userId());
     }
 
     @Override
@@ -42,7 +53,6 @@ public class UserServiceImpl implements UserService {
             User userToUpdate = user.get();
             userToUpdate.setFirstName(event.firstName());
             userToUpdate.setLastName(event.lastName());
-            userToUpdate.setRole(event.role());
             userRepository.save(userToUpdate);
             logger.info("User updated: {}", userToUpdate.getUserId());
         }

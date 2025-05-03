@@ -14,11 +14,11 @@ public interface BidService {
 
     List<Bid> getBidsByJobId(UUID jobId);
 
-    List<Bid> getBidsByUserId(UUID userId);
+    List<Bid> getBidsByFreelancerId(UUID freelancerId);
 
-    Bid getBidByUserId(UUID bidId, UUID userId) throws ApiException;
+    Bid getBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException;
 
-    void updateBidByUserId(UUID bidId, UUID userId, UpdateBidRequest request) throws ApiException;
+    void updateBidByFreelancerId(UUID bidId, UUID freelancerId, UpdateBidRequest request) throws ApiException;
 
-    void deleteBidByUserId(UUID bidId, UUID userId) throws ApiException;
+    void deleteBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException;
 }

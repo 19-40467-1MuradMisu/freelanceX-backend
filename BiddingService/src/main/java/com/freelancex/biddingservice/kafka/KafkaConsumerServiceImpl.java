@@ -1,8 +1,8 @@
 package com.freelancex.biddingservice.kafka;
 
-import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
+import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import com.freelancex.biddingservice.kafka.interfaces.KafkaConsumerService;
@@ -69,7 +69,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
             groupId = "${spring.kafka.consumer.json.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
-    public void consumePaymentCompletedEvent(@Valid UpdateContractEvent event) {
+    public void consumePaymentCompletedEvent(@Valid CompletePaymentEvent event) {
         this.contractService.updateContractStatus(event);
     }
 }

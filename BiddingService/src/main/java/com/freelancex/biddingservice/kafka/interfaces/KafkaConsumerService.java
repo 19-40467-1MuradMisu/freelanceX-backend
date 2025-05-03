@@ -1,8 +1,8 @@
 package com.freelancex.biddingservice.kafka.interfaces;
 
-import com.freelancex.biddingservice.dtos.event.contract.UpdateContractEvent;
 import com.freelancex.biddingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent;
+import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.dtos.event.user.CreateUserEvent;
 import com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -36,5 +36,5 @@ public interface KafkaConsumerService {
             topics = "${kafka.topics.payment-completed}",
             groupId = "${spring.kafka.consumer.json.group-id}",
             errorHandler = "validationErrorHandler")
-    void consumePaymentCompletedEvent(UpdateContractEvent event);
+    void consumePaymentCompletedEvent(CompletePaymentEvent event);
 }
