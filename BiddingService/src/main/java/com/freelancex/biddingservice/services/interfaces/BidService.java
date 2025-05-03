@@ -18,6 +18,8 @@ public interface BidService {
 
     Bid getBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException;
 
+    Bid getBidById(UUID bidId) throws ApiException;
+
     void updateBidByFreelancerId(UUID bidId, UUID freelancerId, UpdateBidRequest request) throws ApiException;
 
     void deleteBidByFreelancerId(UUID bidId, UUID freelancerId) throws ApiException;

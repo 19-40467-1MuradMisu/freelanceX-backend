@@ -24,6 +24,17 @@ public class BidServiceImpl implements BidService {
     }
 
     @Override
+    public Bid getBidById(UUID bidId) {
+        Optional<Bid> bid = bidRepository.findById(bidId);
+
+        if (bid.isEmpty()) {
+            throw new ApiException("Bid not found", HttpStatus.NOT_FOUND);
+        }
+
+        return bid.get();
+    }
+
+    @Override
     public List<Bid> getBidsByJobId(UUID jobId) {
         return this.bidRepository.findByJobId(jobId);
     }

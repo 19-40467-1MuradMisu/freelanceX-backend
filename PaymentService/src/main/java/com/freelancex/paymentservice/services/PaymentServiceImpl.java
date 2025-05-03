@@ -7,34 +7,43 @@ import com.freelancex.paymentservice.exceptions.ApiException;
 import com.freelancex.paymentservice.kafka.KafkaProducerImpl;
 import com.freelancex.paymentservice.models.Payment;
 import com.freelancex.paymentservice.repositories.PaymentRepository;
+import com.freelancex.paymentservice.services.interfaces.ContractService;
 import com.freelancex.paymentservice.services.interfaces.EscrowService;
+import com.freelancex.paymentservice.services.interfaces.PaymentService;
 import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Setter
-public class PaymentServiceImpl {
+@Service
+public class PaymentServiceImpl implements PaymentService {
 
     private final static Logger logger = LoggerFactory.getLogger(PaymentServiceImpl.class.getName());
     private final PaymentRepository paymentRepository;
     private final EscrowService escrowService;
+    private final ContractService contractService;
     private final KafkaProducerImpl kafkaProducer;
 
     public PaymentServiceImpl(PaymentRepository paymentRepository, EscrowService escrowService,
-                              KafkaProducerImpl kafkaProducer) {
+                              ContractService contractService, KafkaProducerImpl kafkaProducer) {
         this.paymentRepository = paymentRepository;
         this.escrowService = escrowService;
+        this.contractService = contractService;
         this.kafkaProducer = kafkaProducer;
     }
 
+    @Override
     public void createPayment(CreateContractEvent event) {
+        contractService.createContract(event);
+
         Payment payment = new Payment();
-        payment.setAmount(event.amount());
         payment.setContractId(event.contractId());
+        payment.setAmount(event.amount());
 
         Payment savedPayment = paymentRepository.save(payment);
         logger.info("Payment: {} create", savedPayment.getPaymentId());
@@ -42,7 +51,8 @@ public class PaymentServiceImpl {
         escrowService.createEscrow(savedPayment.getPaymentId());
     }
 
-    public void updatePayment(UUID paymentId) {
+    @Override
+    public void releasePayment(UUID paymentId) {
         Optional<Payment> payment = paymentRepository.findById(paymentId);
 
         if (payment.isEmpty()) {
@@ -54,13 +64,14 @@ public class PaymentServiceImpl {
         boolean isReleased = escrowService.releaseEscrow(paymentToUpdate.getPaymentId());
 
         if (isReleased) {
+            contractService.completeContract(paymentToUpdate.getContractId());
             CompletePaymentEvent event = new CompletePaymentEvent(paymentToUpdate.getContractId(),
                     ContractStatus.COMPLETED);
-
             kafkaProducer.sendPaymentCompletedEvent(event);
         }
     }
 
+    @Override
     public Payment getPaymentByContractId(UUID contractId) {
         Optional<Payment> payment = paymentRepository.findByContractId(contractId);
 
@@ -69,5 +80,10 @@ public class PaymentServiceImpl {
         }
 
         return payment.get();
+    }
+
+    @Override
+    public List<Payment> getPayments() {
+        return paymentRepository.findAll();
     }
 }

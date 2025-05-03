@@ -1,5 +1,6 @@
 package com.freelancex.paymentservice.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.freelancex.paymentservice.enums.EscrowStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -19,11 +20,11 @@ public class Escrow {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "escrow_id", updatable = false, nullable = false)
+    @Column(name = "escrow_id", nullable = false)
     private UUID escrowId;
 
     @Setter
-    @Column(name = "payment_id", updatable = false, nullable = false)
+    @Column(name = "payment_id", unique = true, nullable = false)
     private UUID paymentId;
 
     @Setter
@@ -31,8 +32,9 @@ public class Escrow {
     @Enumerated(EnumType.STRING)
     private EscrowStatus status = EscrowStatus.HELD;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "payment_id", referencedColumnName = "payment_id", nullable = false, unique = true)
+    @JsonBackReference
+    @OneToOne()
+    @JoinColumn(name = "payment_id", updatable = false, insertable = false)
     private Payment payment;
 
     @CreatedDate

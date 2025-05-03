@@ -9,5 +9,5 @@ public interface KafkaConsumer {
             topics = "${kafka.topics.contract-created}",
             groupId = "${spring.kafka.consumer.json.group-id}",
             errorHandler = "validationErrorHandler")
-    void consumeUserCreatedEvent(@Valid CreateContractEvent event);
+    void consumeContractCreatedEvent(@Valid CreateContractEvent event);
 }

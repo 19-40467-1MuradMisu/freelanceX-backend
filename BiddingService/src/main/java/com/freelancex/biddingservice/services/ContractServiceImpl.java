@@ -6,8 +6,10 @@ import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
 import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import com.freelancex.biddingservice.kafka.interfaces.KafkaProducerService;
+import com.freelancex.biddingservice.models.Bid;
 import com.freelancex.biddingservice.models.Contract;
 import com.freelancex.biddingservice.repositories.ContractRepository;
+import com.freelancex.biddingservice.services.interfaces.BidService;
 import com.freelancex.biddingservice.services.interfaces.ContractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,12 +25,14 @@ import java.util.UUID;
 public class ContractServiceImpl implements ContractService {
     private final static Logger logger = LoggerFactory.getLogger(ContractServiceImpl.class);
     private final ContractRepository contractRepository;
+    private final BidService bidService;
     private final KafkaProducerService kafkaProducerService;
 
     @Autowired
-    public ContractServiceImpl(ContractRepository contractRepository,
+    public ContractServiceImpl(ContractRepository contractRepository, BidService bidService,
                                KafkaProducerService kafkaProducerService) {
         this.contractRepository = contractRepository;
+        this.bidService = bidService;
         this.kafkaProducerService = kafkaProducerService;
     }
 
@@ -72,7 +76,9 @@ public class ContractServiceImpl implements ContractService {
 
         Contract savedContract = contractRepository.save(contract);
 
-        CreateContractEvent event = new CreateContractEvent(savedContract.getContractId(),
+        Bid bid = bidService.getBidById(request.getBidId());
+
+        CreateContractEvent event = new CreateContractEvent(savedContract.getContractId(), bid.getAmount(),
                 savedContract.getStatus());
         this.kafkaProducerService.sendContractCreatedEvent(event);
     }

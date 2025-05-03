@@ -1,5 +1,6 @@
 package com.freelancex.paymentservice.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,14 +23,14 @@ public class Payment {
     private UUID paymentId;
 
     @Setter
-    @Column(name = "contract_id", updatable = false, nullable = false)
+    @Column(name = "contract_id", nullable = false, unique = true)
     private UUID contractId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-            name = "contract_id", referencedColumnName = "contract_id", unique = true, nullable = false)
+    @OneToOne()
+    @JoinColumn(name = "contract_id", updatable = false, insertable = false)
     private Contract contract;
 
+    @JsonManagedReference
     @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, orphanRemoval = true)
     private Escrow escrow;
 

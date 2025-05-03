@@ -20,7 +20,4 @@ public class Contract {
     @Column(nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
     private ContractStatus status;
-
-    @OneToOne(mappedBy = "contract", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Payment payment;
 }
