@@ -1,17 +1,20 @@
 package com.freelancex.biddingservice.models;
 
-import com.freelancex.biddingservice.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.freelancex.biddingservice.views.Views;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "role", discriminatorType = DiscriminatorType.STRING)
+@JsonView({Views.BaseView.class})
 public class User {
 
     @Id
@@ -23,14 +26,6 @@ public class User {
 
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-
-    @Column(nullable = false, length = 50)
-    private UserRole role;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Job> job;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Bid> bid;
 }
+
 

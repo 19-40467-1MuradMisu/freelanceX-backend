@@ -1,10 +1,10 @@
-package com.freelancex.biddingservice.dtos.event.contract;
+package com.freelancex.biddingservice.dtos.event.payment;
 
 import com.freelancex.biddingservice.enums.ContractStatus;
 
 import java.util.UUID;
 
-public record UpdateContractEvent(
+public record CompletePaymentEvent(
         UUID contractId,
         ContractStatus status
 ) {

@@ -22,7 +22,6 @@ public class JobServiceImpl implements JobService {
         this.jobRepository = jobRepository;
     }
 
-
     @Override
     public void createJob(CreateJobEvent event) {
         Job job = new Job();
@@ -30,6 +29,7 @@ public class JobServiceImpl implements JobService {
         job.setJobId(event.jobId());
         job.setBudget(event.budget());
         job.setTitle(event.title());
+        job.setClientId(event.clientId());
         job.setStatus(event.status());
 
         jobRepository.save(job);

@@ -1,7 +1,10 @@
 package com.freelancex.biddingservice.dtos.api.bid;
 
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.Value;
 
 import java.util.UUID;
 
@@ -12,7 +15,7 @@ public class CreateBidRequest {
     UUID jobId;
 
     @NotNull(message = "Freelancer ID is required")
-    UUID userId;
+    UUID freelancerId;
 
     @NotNull(message = "Amount is required")
     @Positive(message = "Amount must be positive")

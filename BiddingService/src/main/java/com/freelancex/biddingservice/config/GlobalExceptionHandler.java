@@ -1,6 +1,6 @@
-package com.freelancex.biddingservice.utils;
+package com.freelancex.biddingservice.config;
 
-import com.freelancex.biddingservice.dtos.common.Response;
+import com.freelancex.biddingservice.dtos.common.ApiResponse;
 import com.freelancex.biddingservice.exceptions.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +20,8 @@ public class GlobalExceptionHandler {
     private final static Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Response> handleAllExceptions(Exception ex, WebRequest request) {
-        Response errorResponse = Response.builder()
+    public ResponseEntity<ApiResponse> handleAllExceptions(Exception ex, WebRequest request) {
+        ApiResponse errorResponse = ApiResponse.builder()
                 .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
                 .message("Something went wrong")
                 .build();
@@ -30,8 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<Response> handleResourceNotFound(ApiException ex, WebRequest request) {
-        Response errorResponse = Response.builder()
+    public ResponseEntity<ApiResponse> handleResourceNotFound(ApiException ex, WebRequest request) {
+        ApiResponse errorResponse = ApiResponse.builder()
                 .statusCode(ex.getStatusCode().value())
                 .message(ex.getMessage())
                 .build();
@@ -40,14 +40,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Response> handleValidationErrors(MethodArgumentNotValidException ex, WebRequest request) {
+    public ResponseEntity<ApiResponse> handleValidationErrors(MethodArgumentNotValidException ex,
+                                                              WebRequest request) {
         String errorMessage = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(", "));
 
-        Response errorResponse = Response.builder()
+        ApiResponse errorResponse = ApiResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .message(errorMessage)
                 .build();
