@@ -1,41 +1,41 @@
 package com.freelancex.userservice.model;
 
-import java.util.UUID;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
 
 @Entity
 @Table(name = "profiles")
 @Getter
-@Setter
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class Profile {
 
- @Id
-@GeneratedValue(generator = "UUID")
-@Column(name="id", updatable = false, nullable = false)
-private UUID id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "profile_id", updatable = false, nullable = false)
+    private UUID profileId;
 
-
-    @NotBlank(message = "First name is required")
+    @Setter
+    @Column(nullable = false, length = 50)
     private String firstName;
 
-    @NotBlank(message = "Last name is required")
+    @Setter
+    @Column(nullable = false, length = 50)
     private String lastName;
 
+    @Setter
+    @Column(nullable = true, length = 1000)
     private String bio;
 
-    private boolean isSkillVerified;
+    @Setter
+    @Column(nullable = false)
+    private boolean isSkillVerified = false;
 
-    
+    @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore   
+    @JsonBackReference
     private User user;
 }

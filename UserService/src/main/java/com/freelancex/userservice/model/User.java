@@ -1,52 +1,50 @@
 package com.freelancex.userservice.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.freelancex.userservice.enums.UserRole;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
-@Builder
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public class User {
- @Id
-@GeneratedValue(generator = "UUID")
-@Column(name="id", updatable = false, nullable = false)
-private UUID id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @Column(name = "user_id", updatable = false, nullable = false)
+    private UUID userId;
 
-    @NotBlank(message = "Name is required")
-    private String name;
-
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email must be valid")
-    @Column(unique = true)
+    @Setter
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @NotBlank(message = "Password is required")
+    @Setter
+    @Column(nullable = false)
     private String password;
 
+    @Setter
     @Enumerated(EnumType.STRING)
-    private Role role = Role.FREELANCER;
+    @Column(nullable = false)
+    private UserRole role = UserRole.FREELANCER;
 
-    @CreationTimestamp
-    @Column(updatable = false)
+    @Setter
+    @CreatedDate
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
-      @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Profile profile;
+    @Setter
+    @LastModifiedDate
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
 
-    public enum Role {
-        FREELANCER, CLIENT, ADMIN
-    }
+    @Setter
+    @JsonManagedReference
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Profile profile;
 }

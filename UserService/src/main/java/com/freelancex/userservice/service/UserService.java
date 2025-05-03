@@ -1,11 +1,14 @@
 package com.freelancex.userservice.service;
 
+import com.freelancex.userservice.dtos.api.LoginRequest;
+import com.freelancex.userservice.dtos.api.CreateUserRequest;
+import com.freelancex.userservice.enums.UserRole;
+import com.freelancex.userservice.jwt.interfaces.JwtService;
+import com.freelancex.userservice.model.Profile;
 import com.freelancex.userservice.model.User;
-import com.freelancex.userservice.model.User.Role;
 import com.freelancex.userservice.repository.UserRepository;
-
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,47 +19,62 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                       JwtService jwtService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
-public User createUser(User user) {
-    if (userRepository.existsByEmail(user.getEmail())) {
-        throw new IllegalArgumentException("Email already exists");
+    public String login(LoginRequest request) {
+        User user = getUserByEmail(request.getEmail());
+
+        boolean doesPasswordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
+
+        if (!doesPasswordMatch) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
+        }
+
+        return jwtService.generateToken(user.getEmail(), user.getRole().name());
     }
 
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public User createUser(CreateUserRequest request) {
+        if (getUserByEmail(request.email()) != null) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already exists");
+        }
 
-    if (user.getProfile() != null) {
-        user.getProfile().setUser(user);  // 👈 Important: Set the link manually
+        User user = new User();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setEmail(request.email());
+
+        Profile profile = new Profile();
+        profile.setFirstName(request.firstName());
+        profile.setLastName(request.lastName());
+
+        user.setProfile(profile);
+
+        return userRepository.save(user);
     }
 
-    return userRepository.save(user);
-}
 
-
-    public User getUser(String email) {
+    public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-public User findById(UUID id) {
-    return userRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id));
-}
-public List<User> getAllUsers() {
-    return userRepository.findAll();
-}
+    public User findById(UUID id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+    }
 
-public List<User> getUsersByRole(Role role) {
-    return userRepository.findByRole(role);  // Return users based on role
-}
-public User loadUserByUsername(String email) {
-    return userRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
-}
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
+    public List<User> getUsersByRole(UserRole role) {
+        return userRepository.findByRole(role);
+    }
 }

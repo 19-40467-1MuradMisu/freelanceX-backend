@@ -1,71 +1,55 @@
 package com.freelancex.userservice.controller;
 
-import com.freelancex.userservice.Jwt.JwtService;
-import com.freelancex.userservice.dtos.AuthRequest;
+import com.freelancex.userservice.dtos.api.CreateUserRequest;
+import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.model.User;
-import com.freelancex.userservice.model.User.Role;
 import com.freelancex.userservice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
-import java.util.Collections;
-import java.util.UUID;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/users")
-public class UserController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+import java.util.UUID;
 
-    @Autowired
-    private JwtService jwtService;
-    
-    @Autowired
+@RestController
+@RequestMapping("/api/user")
+public class UserController {
+
     private final UserService userService;
 
+    @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        System.out.println(user);
-        User createdUser = userService.createUser(user);
-        return ResponseEntity.ok(createdUser);
-    }
 
- @GetMapping("/{id}")
-public ResponseEntity<User> getUserById(@PathVariable UUID id) {
-    User user = userService.findById(id);
-    return ResponseEntity.ok(user);
-}
-    @GetMapping("/email/{email}")
-    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
-        User user = userService.getUser(email);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable UUID id) {
+        User user = userService.findById(id);
         return ResponseEntity.ok(user);
     }
-    @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-        );
 
-        final User user = userService.loadUserByUsername(request.getUsername());
-        final String jwtToken = jwtService.generateToken(user);
-        return ResponseEntity.ok(Collections.singletonMap("token", jwtToken));
+    @GetMapping("/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
 
-
- @GetMapping
-public ResponseEntity<?> getAllUsers(@RequestParam(required = false) Role role) {
-    if (role != null) {  // Correct the check here to 'role' instead of 'type'
-        return ResponseEntity.ok(userService.getUsersByRole(role));  // Pass 'role' to the service method
+    @GetMapping("/verify")
+    public ResponseEntity<User> verifyUser(HttpServletRequest request) {
+        String email = (String) request.getAttribute("email");
+        User user = userService.getUserByEmail(email);
+        return ResponseEntity.ok(user);
     }
-    return ResponseEntity.ok(userService.getAllUsers());
-}
+
+    @GetMapping("/role/{role}")
+    public ResponseEntity<?> getAllUsers(@PathVariable UserRole role) {
+        return ResponseEntity.ok(userService.getUsersByRole(role));
+    }
+
+    @GetMapping("/")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
 }

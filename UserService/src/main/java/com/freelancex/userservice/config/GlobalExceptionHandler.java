@@ -1,5 +1,6 @@
-package com.freelancex.userservice.exception;
+package com.freelancex.userservice.config;
 
+import com.freelancex.userservice.dtos.common.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,18 +23,6 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse("Resource not found"));
     }
-
-
 }
 
-class ErrorResponse {
-    private String message;
 
-    public ErrorResponse(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-}
