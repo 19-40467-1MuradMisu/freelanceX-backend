@@ -1,11 +1,15 @@
 package com.freelancex.userservice.service;
 
 import com.freelancex.userservice.model.User;
+import com.freelancex.userservice.model.User.Role;
 import com.freelancex.userservice.repository.UserRepository;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,7 +43,20 @@ public User createUser(User user) {
                 .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
     }
 
-    public Optional<User> findById(UUID id) {
-        return userRepository.findById(id);
-    }
+public User findById(UUID id) {
+    return userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with ID: " + id));
+}
+public List<User> getAllUsers() {
+    return userRepository.findAll();
+}
+
+public List<User> getUsersByRole(Role role) {
+    return userRepository.findByRole(role);  // Return users based on role
+}
+public User loadUserByUsername(String email) {
+    return userRepository.findByEmail(email)
+            .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " not found"));
+}
+
 }
