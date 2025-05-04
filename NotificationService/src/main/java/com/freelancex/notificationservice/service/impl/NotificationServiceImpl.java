@@ -1,7 +1,7 @@
 package com.freelancex.notificationservice.service.impl;
 
 import com.freelancex.notificationservice.model.Notification;
-import com.freelancex.notificationservice.repository.NotificationLogRepository;
+import com.freelancex.notificationservice.repository.NotificationRepository;
 import com.freelancex.notificationservice.service.NotificationService;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.UUID;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private final NotificationLogRepository repository;
+    private final NotificationRepository repository;
 
-    public NotificationServiceImpl(NotificationLogRepository repository) {
+    public NotificationServiceImpl(NotificationRepository repository) {
         this.repository = repository;
     }
 

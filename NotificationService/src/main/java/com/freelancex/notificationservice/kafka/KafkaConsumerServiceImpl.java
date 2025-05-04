@@ -1,13 +1,13 @@
 package com.freelancex.notificationservice.kafka;
 
-import com.freelancex.notificationservice.dto.event.payment.PaymentCompletedEvent;
-import com.freelancex.notificationservice.kafka.interfaces.KafkaConsumerService;
+import com.freelancex.notificationservice.dtos.contract.CreateContractEvent;
+import com.freelancex.notificationservice.dtos.rating.CreateRatingEvent;
 import com.freelancex.notificationservice.service.NotificationService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
-public class KafkaConsumerServiceImpl implements KafkaConsumerService {
+public class KafkaConsumerServiceImpl {
 
     private final NotificationService notificationService;
 
@@ -15,17 +15,26 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
         this.notificationService = notificationService;
     }
 
-    @Override
     @KafkaListener(
-            topics = "${kafka.topics.payment-completed}",
+            topics = "${kafka.topics.contract-created}",
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
-    public void consumePaymentCompletedEvent(PaymentCompletedEvent event) {
+    public void consumeContractCreatedEvent(CreateContractEvent event) {
         String content = String.format(
-            "Payment of $%.2f for contract #%s has been completed successfully.",
-            event.getAmount(),
-            event.getContractId()
+                "Contract of $%.2f has been created.",
+                event.amount()
         );
-        notificationService.processEventNotification("payment_completed", event.getUserId(), content);
+        notificationService.processEventNotification("contract_created", event.userId(), content);
+    }
+
+    @KafkaListener(
+            topics = "${kafka.topics.review-created}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void consumeRatingCreatedEvent(CreateRatingEvent event) {
+        String content = String.format(
+                "You got %d review.", event.score().getValue()
+        );
+        notificationService.processEventNotification("rating_created", event.userId(), content);
     }
 }

@@ -1,10 +1,12 @@
-package com.freelancex.notificationservice.dto.event.contract;
+package com.freelancex.notificationservice.dtos.contract;
 
 import com.freelancex.notificationservice.enums.ContractStatus;
 import java.util.UUID;
 
 public record CreateContractEvent(
-        UUID contractId,
         UUID userId,
+        UUID contractId,
+        Double amount,
         ContractStatus status
-) {}
+) {
+}
