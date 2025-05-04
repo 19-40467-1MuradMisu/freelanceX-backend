@@ -25,14 +25,8 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String description;
-
     @Column(nullable = false)
     private Double budget;
-
-    @Column(nullable = false)
-    private String location;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
