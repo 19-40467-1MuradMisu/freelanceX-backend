@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
     private final UserService userService;
 
@@ -19,7 +19,7 @@ public class AuthController {
         this.userService = userService;
     }
 
-    @RequestMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<String> loginUser(@Valid @RequestBody LoginRequest request) {
         String token = userService.login(request);
         return ResponseEntity.ok(token);
