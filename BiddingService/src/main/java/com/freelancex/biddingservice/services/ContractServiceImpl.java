@@ -78,7 +78,8 @@ public class ContractServiceImpl implements ContractService {
 
         Bid bid = bidService.getBidById(request.getBidId());
 
-        CreateContractEvent event = new CreateContractEvent(savedContract.getContractId(), bid.getAmount(),
+        CreateContractEvent event = new CreateContractEvent(bid.getFreelancerId(),
+                savedContract.getContractId(), bid.getAmount(),
                 savedContract.getStatus());
         this.kafkaProducerService.sendContractCreatedEvent(event);
     }
