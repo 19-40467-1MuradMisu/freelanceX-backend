@@ -15,7 +15,7 @@ public class VerificationService {
     private final CertificationRepository certificationRepository;
     private final KafkaProducerServiceImpl kafkaProducerService;
    
-    private static final List<String> SUPPORTED_SKILLS = List.of("Java", "Python", "JavaScript");
+    private static final List<String> SUPPORTED_SKILLS = List.of("java", "python", "javascript");
 
     public VerificationService(CertificationRepository certificationRepository, KafkaProducerServiceImpl kafkaProducerService) {
         this.kafkaProducerService = kafkaProducerService;
@@ -28,7 +28,7 @@ public class VerificationService {
         boolean isValid = true;
 
         for (String skill : skillList) {
-            if (!SUPPORTED_SKILLS.contains(skill.trim())) {
+            if (!SUPPORTED_SKILLS.contains(skill.toLowerCase().trim())) {
                 isValid = false;
                 break;
             }
