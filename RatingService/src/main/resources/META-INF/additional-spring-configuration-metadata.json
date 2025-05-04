@@ -14,6 +14,31 @@
       "name": "kafka.topics.payment-completed",
       "type": "java.lang.String",
       "description": "Description for kafka.topics.payment-completed."
+    },
+    {
+      "name": "kafka.topics.user-updated",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.user-updated."
+    },
+    {
+      "name": "kafka.topics.user-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.user-created."
+    },
+    {
+      "name": "kafka.topics.job-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.job-created."
+    },
+    {
+      "name": "kafka.topics.job-updated",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.job-updated."
+    },
+    {
+      "name": "kafka.topics.review-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.review-created."
     }
   ]
 }

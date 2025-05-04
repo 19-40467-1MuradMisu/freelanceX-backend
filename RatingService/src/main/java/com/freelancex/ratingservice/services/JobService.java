@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class JobServiceImpl {
+public class JobService {
     private final JobRepository jobRepository;
-    private final static Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
+    private final static Logger logger = LoggerFactory.getLogger(JobService.class);
 
     @Autowired
-    public JobServiceImpl(JobRepository jobRepository) {
+    public JobService(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
 

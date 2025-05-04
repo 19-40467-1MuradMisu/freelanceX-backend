@@ -2,8 +2,7 @@ package com.freelancex.ratingservice.controller;
 
 import com.freelancex.ratingservice.dtos.common.ApiResponse;
 import com.freelancex.ratingservice.models.Rating;
-import com.freelancex.ratingservice.services.RatingServiceImpl;
-
+import com.freelancex.ratingservice.services.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +15,10 @@ import java.util.UUID;
 @RequestMapping("/ratings")
 public class RatingController {
 
-    private final RatingServiceImpl ratingService;
+    private final RatingService ratingService;
 
     @Autowired
-    public RatingController(RatingServiceImpl ratingService) {
+    public RatingController(RatingService ratingService) {
         this.ratingService = ratingService;
     }
 
@@ -45,14 +44,15 @@ public class RatingController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse<Rating>> updateRating( @RequestBody Rating ratingDetails,@RequestBody UUID ratingId) {
-        Rating updatedRating = ratingService.updateRating(ratingId,ratingDetails);
+    public ResponseEntity<ApiResponse<Rating>> updateRating(@PathVariable UUID id,
+                                                            @RequestBody Rating ratingDetails) {
+        Rating updatedRating = ratingService.updateRating(id, ratingDetails);
         ApiResponse<Rating> response = new ApiResponse<>("Rating updated successfully", HttpStatus.OK.value(), updatedRating);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> deleteRating(@PathVariable UUID id,@PathVariable UUID userId) {
+    @DeleteMapping("/{id}/user/{userId}")
+    public ResponseEntity<ApiResponse<Void>> deleteRating(@PathVariable UUID id, @PathVariable UUID userId) {
         ratingService.deleteRating(id,userId);
         ApiResponse<Void> response = new ApiResponse<>("Rating deleted successfully", HttpStatus.OK.value(), null);
         return new ResponseEntity<>(response, HttpStatus.OK);

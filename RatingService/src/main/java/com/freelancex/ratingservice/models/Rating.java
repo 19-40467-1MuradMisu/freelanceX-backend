@@ -1,6 +1,5 @@
 package com.freelancex.ratingservice.models;
 
-
 import com.freelancex.ratingservice.enums.Score;
 
 import jakarta.persistence.*;
@@ -9,17 +8,15 @@ import lombok.Setter;
 
 import java.util.UUID;
 
-
 @Entity
-@Table(name = "ratings",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"jobId", "userId"}))
+@Table(name = "ratings", uniqueConstraints = @UniqueConstraint(columnNames = {"jobId", "userId"}))
 @Getter
 @Setter
 public class Rating {
-
     @Id
+    @Column(nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID ratingId;
 
     @Column(name = "job_id", nullable = false)
     private UUID jobId;
@@ -31,6 +28,6 @@ public class Rating {
     @Enumerated(EnumType.ORDINAL)
     private Score score; 
 
-    @Column(columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String comment;
 }
