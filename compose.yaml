@@ -1,0 +1,168 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_SYNC_LIMIT: 5
+      ZOOKEEPER_INIT_LIMIT: 5
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "-z", "localhost", "2181"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - freelanceX-network
+      - kafka-network
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: broker
+    ports:
+      - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://broker:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_NUM_PARTITIONS: 3
+      KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    networks:
+      - freelanceX-network
+      - kafka-network
+  
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    networks:
+      - freelanceX-network
+  
+  eureka-server:
+    build: ./ServiceDiscovery
+    ports:
+      - "8761:8761"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - postgres
+      - zookeeper
+      - broker
+  
+  ApiGateway:
+    build: ./ApiGateway
+    ports:
+      - "8080:8080"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  UserService:
+    build: ./UserService
+    ports:
+      - "8081:8081"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  JobService:
+    build: ./JobService
+    ports:
+      - "8082:8082"
+    deploy:
+      mode: replicated
+      replicas: 2
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  BidService:
+    build: ./BiddingService
+    ports:
+      - "8083:8083"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  PaymentService:
+    build: ./PaymentService
+    ports:
+      - "8084:8084"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  RatingService:
+    build: ./RatingService
+    ports:
+      - "8085:8085"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  NotificationService:
+    build: ./NotificationService
+    ports:
+      - "8086:8086"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+  SkillService:
+    build: ./SkillService
+    ports:
+      - "8087:8087"
+    networks:
+      - freelanceX-network
+    depends_on:
+      - eureka-server
+      - postgres
+      - broker
+
+volumes:
+  postgres-data:
+
+networks:
+  freelanceX-network:
+    driver: bridge
+  kafka-network:
+    driver: bridge
