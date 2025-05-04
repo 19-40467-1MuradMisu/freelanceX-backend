@@ -36,6 +36,20 @@ public class RatingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/job/{jobId}")
+    public ResponseEntity<ApiResponse<List<Rating>>> getRatingByJobId(@RequestParam("jobId") UUID jobId) {
+        List<Rating> ratings = ratingService.getRatingsByJobId(jobId);
+        ApiResponse<List<Rating>> response = new ApiResponse<>("Ratings fetched successfully", HttpStatus.OK.value(), ratings);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ApiResponse<List<Rating>>> getRatingByUserId(@RequestParam("userId") UUID userId) {
+        List<Rating> ratings = ratingService.getRatingsByUserId(userId);
+        ApiResponse<List<Rating>> response = new ApiResponse<>("Ratings fetched successfully", HttpStatus.OK.value(), ratings);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @GetMapping("/job/{jobId}/user/{userId}")
     public ResponseEntity<ApiResponse<Rating>> getRatingByJobIdAndUserId(@PathVariable UUID jobId, @PathVariable UUID userId) {
         Rating rating = ratingService.getRatingByJobIdAndUserId(jobId, userId);
