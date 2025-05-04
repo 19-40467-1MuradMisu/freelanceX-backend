@@ -6,6 +6,7 @@ import com.freelancex.userservice.dtos.event.CreateUserEvent;
 import com.freelancex.userservice.dtos.event.SkillVerifiedEvent;
 import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.jwt.interfaces.JwtService;
+import com.freelancex.userservice.kafka.KafkaProducerService;
 import com.freelancex.userservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.userservice.model.Profile;
 import com.freelancex.userservice.model.User;
@@ -29,10 +30,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
-    private final KafkaProducerServiceImpl kafkaProducerService;
+    private final KafkaProducerService kafkaProducerService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       JwtService jwtService, KafkaProducerServiceImpl kafkaProducerService) {
+                       JwtService jwtService, KafkaProducerService kafkaProducerService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
