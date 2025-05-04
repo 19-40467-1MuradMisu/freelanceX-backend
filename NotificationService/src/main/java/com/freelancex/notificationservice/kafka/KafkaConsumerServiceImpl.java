@@ -33,7 +33,7 @@ public class KafkaConsumerServiceImpl {
             containerFactory = "kafkaListenerContainerFactory")
     public void consumeRatingCreatedEvent(CreateRatingEvent event) {
         String content = String.format(
-                "You got %d review.", event.score().getValue()
+                "You got %d star review.", event.score().getValue()
         );
         notificationService.processEventNotification("rating_created", event.userId(), content);
     }
