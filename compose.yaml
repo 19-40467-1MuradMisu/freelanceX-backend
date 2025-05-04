@@ -56,6 +56,7 @@ services:
   
   eureka-server:
     build: ./ServiceDiscovery
+    image: freelancex-backend-eurekaserver
     ports:
       - "8761:8761"
     networks:
@@ -67,6 +68,7 @@ services:
   
   ApiGateway:
     build: ./ApiGateway
+    image: freelancex-backend-apigateway
     ports:
       - "8080:8080"
     networks:
@@ -78,6 +80,7 @@ services:
 
   UserService:
     build: ./UserService
+    image: freelancex-backend-userservice
     ports:
       - "8081:8081"
     networks:
@@ -89,8 +92,7 @@ services:
 
   JobService:
     build: ./JobService
-    ports:
-      - "8082:8082"
+    image: freelancex-backend-jobservice
     deploy:
       mode: replicated
       replicas: 2
@@ -103,6 +105,7 @@ services:
 
   BidService:
     build: ./BiddingService
+    image: freelancex-backend-bidservice
     ports:
       - "8083:8083"
     networks:
@@ -114,6 +117,7 @@ services:
 
   PaymentService:
     build: ./PaymentService
+    image: freelancex-backend-paymentservice
     ports:
       - "8084:8084"
     networks:
@@ -125,6 +129,7 @@ services:
 
   RatingService:
     build: ./RatingService
+    image: freelancex-backend-ratingservice
     ports:
       - "8085:8085"
     networks:
@@ -136,6 +141,7 @@ services:
 
   NotificationService:
     build: ./NotificationService
+    image: freelancex-backend-notificationservice
     ports:
       - "8086:8086"
     networks:
@@ -147,6 +153,7 @@ services:
 
   SkillService:
     build: ./SkillService
+    image: freelancex-backend-skillservice
     ports:
       - "8087:8087"
     networks:
