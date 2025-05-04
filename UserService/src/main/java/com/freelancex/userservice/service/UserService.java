@@ -7,7 +7,6 @@ import com.freelancex.userservice.dtos.event.SkillVerifiedEvent;
 import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.jwt.interfaces.JwtService;
 import com.freelancex.userservice.kafka.KafkaProducerService;
-import com.freelancex.userservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.userservice.model.Profile;
 import com.freelancex.userservice.model.User;
 import com.freelancex.userservice.repository.UserRepository;
