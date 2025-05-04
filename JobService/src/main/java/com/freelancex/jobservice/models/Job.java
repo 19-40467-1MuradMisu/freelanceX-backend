@@ -2,7 +2,6 @@ package com.freelancex.jobservice.models;
 
 
 import com.freelancex.jobservice.enums.JobStatus;
-
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +15,7 @@ import java.util.UUID;
 public class Job {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "job_id", nullable = false, updatable = false)
     private UUID jobId;
 

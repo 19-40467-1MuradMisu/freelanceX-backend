@@ -6,9 +6,6 @@ import com.freelancex.jobservice.exceptions.ApiException;
 import com.freelancex.jobservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.jobservice.models.Job;
 import com.freelancex.jobservice.repositories.JobRepository;
-
-// import org.slf4j.Logger;
-// import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -24,18 +21,17 @@ public class JobServiceImpl  {
     private final JobRepository jobRepository;
     private final KafkaProducerServiceImpl kafkaProducer;
 
-    public JobServiceImpl(JobRepository jobRepository,KafkaProducerServiceImpl kafkaProducer) {
+    public JobServiceImpl(JobRepository jobRepository, KafkaProducerServiceImpl kafkaProducer) {
         this.jobRepository = jobRepository;
         this.kafkaProducer = kafkaProducer;
     }
 
 
     public Job createJob(Job job) {
-        job.setJobId(UUID.randomUUID());
-
         Job saveJob = jobRepository.save(job);
-         CreateJobEvent createjobevent=new CreateJobEvent(saveJob.getJobId(),saveJob.getClientId(),saveJob.getStatus(),saveJob.getBudget(),saveJob.getTitle());
-        this.kafkaProducer.sendJobCreatedEvent(createjobevent);
+        CreateJobEvent event = new CreateJobEvent(saveJob.getJobId(), saveJob.getClientId(),
+                saveJob.getStatus(), saveJob.getBudget(), saveJob.getTitle());
+        this.kafkaProducer.sendJobCreatedEvent(event);
         return saveJob;
     }
 
@@ -60,8 +56,9 @@ public class JobServiceImpl  {
         job.setLocation(jobDetails.getLocation());
         job.setStatus(jobDetails.getStatus());
         Job saveJob = jobRepository.save(job);
-        updateJobEvent createjobevent=new updateJobEvent(saveJob.getJobId(),saveJob.getClientId(),saveJob.getStatus(),saveJob.getBudget(),saveJob.getTitle());
-        this.kafkaProducer.sendJobUpdatedEvent(createjobevent);
+        updateJobEvent event = new updateJobEvent(saveJob.getJobId(), saveJob.getClientId(),
+                saveJob.getStatus(), saveJob.getBudget(), saveJob.getTitle());
+        this.kafkaProducer.sendJobUpdatedEvent(event);
         return saveJob;
 
        
