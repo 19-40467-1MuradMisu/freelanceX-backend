@@ -1,5 +1,8 @@
 package com.freelancex.notificationservice.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum Score {
     ONE(1),
     TWO(2),
@@ -11,16 +14,5 @@ public enum Score {
 
     Score(int value) {
         this.value = value;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public static Score fromInt(int val) {
-        for (Score score : values()) {
-            if (score.value == val) return score;
-        }
-        throw new IllegalArgumentException("Invalid score value: " + val);
     }
 }

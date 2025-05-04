@@ -4,4 +4,5 @@ import com.freelancex.notificationservice.enums.Score;
 
 import java.util.UUID;
 
-public record CreateRatingEvent(UUID userId, Score score) { }
+public record CreateRatingEvent(UUID userId, Score score) {
+}

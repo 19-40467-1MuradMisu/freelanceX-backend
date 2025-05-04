@@ -7,5 +7,6 @@ import java.util.UUID;
 
 public interface NotificationService {
     List<Notification> getUserNotifications(UUID userId);
+
     void processEventNotification(String eventType, UUID userId, String content);
 }
