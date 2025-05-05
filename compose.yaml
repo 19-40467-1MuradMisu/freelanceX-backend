@@ -35,7 +35,7 @@ services:
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 1
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--bootstrap-server", "localhost:9092", "--list"]
+      test: ["CMD-SHELL", "nc -z broker 29092 || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -50,9 +50,14 @@ services:
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - freelanceX-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   
   eureka-server:
     build: ./ServiceDiscovery
@@ -74,9 +79,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   UserService:
     build: ./UserService
@@ -86,9 +94,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   JobService:
     build: ./JobService
@@ -99,9 +110,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   BidService:
     build: ./BiddingService
@@ -111,9 +125,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   PaymentService:
     build: ./PaymentService
@@ -123,9 +140,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   RatingService:
     build: ./RatingService
@@ -135,9 +155,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+          condition: service_healthy
 
   NotificationService:
     build: ./NotificationService
@@ -147,9 +170,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
   SkillService:
     build: ./SkillService
@@ -159,9 +185,12 @@ services:
     networks:
       - freelanceX-network
     depends_on:
-      - eureka-server
-      - postgres
-      - broker
+      eureka-server:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      broker:
+        condition: service_healthy
 
 volumes:
   postgres-data:
