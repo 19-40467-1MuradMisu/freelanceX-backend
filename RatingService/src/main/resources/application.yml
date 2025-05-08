@@ -17,8 +17,7 @@ spring:
         spring:
           json:
             type:
-              mapping: >
-                rating.created:com.freelancex.ratingservice.dtos.event.rating.CreateRatingEvent
+              mapping: rating.created:com.freelancex.ratingservice.dtos.event.rating.CreateRatingEvent
 
     consumer:
       group-id: rating_event_group

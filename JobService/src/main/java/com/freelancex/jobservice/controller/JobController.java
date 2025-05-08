@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/jobs")
+@RequestMapping("/job")
 public class JobController {
 
     private final JobServiceImpl jobService;

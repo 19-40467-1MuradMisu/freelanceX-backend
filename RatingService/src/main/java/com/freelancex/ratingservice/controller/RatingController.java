@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/ratings")
+@RequestMapping("/rating")
 public class RatingController {
 
     private final RatingService ratingService;

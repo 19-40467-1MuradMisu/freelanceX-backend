@@ -21,12 +21,12 @@ spring:
         - id: job-service
           uri: lb://JobService
           predicates:
-            - Path=/api/jobs/**
+            - Path=/api/job/**
 
         - id: notification-service
           uri: lb://NotificationService
           predicates:
-            - Path=/api/notifications/**
+            - Path=/api/notification/**
 
         - id: payment-service
           uri: lb://PaymentService
@@ -36,7 +36,7 @@ spring:
         - id: rating-service
           uri: lb://RatingService
           predicates:
-            - Path=/api/ratings/**
+            - Path=/api/rating/**
 
         - id: skill-service
           uri: lb://SkillService
@@ -72,3 +72,35 @@ eureka:
       defaultZone: http://eureka-server:8761/eureka/
   instance:
     prefer-ip-address: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway
+
+      - url: /api/user/v3/api-docs
+        name: UserService
+
+      - url: /api/job/v3/api-docs
+        name: JobService
+
+      - url: /api/bid/v3/api-docs
+        name: BiddingService
+
+      - url: /api/payment/v3/api-docs
+        name: PaymentService
+
+      - url: /api/rating/v3/api-docs
+        name: RatingService
+
+      - url: /api/notification/v3/api-docs
+        name: NotificationService
+
+      - url: /api/skill/v3/api-docs
+        name: SkillService
