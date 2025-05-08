@@ -18,7 +18,7 @@ public class KafkaConsumerImpl implements KafkaConsumer {
 
     @KafkaListener(
             topics = "${kafka.topics.contract-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
     public void consumeContractCreatedEvent(@Valid CreateContractEvent event) {

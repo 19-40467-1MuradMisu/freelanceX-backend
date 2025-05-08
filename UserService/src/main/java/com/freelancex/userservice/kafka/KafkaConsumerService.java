@@ -16,7 +16,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.skill-verified}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
 
     public void consumeSkillVerifiedEvent(SkillVerifiedEvent event) {

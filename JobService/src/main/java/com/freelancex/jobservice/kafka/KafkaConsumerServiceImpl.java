@@ -24,7 +24,7 @@ public class KafkaConsumerServiceImpl  {
 
     @KafkaListener(
             topics = "${kafka.topics.user-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
 
     public void consumeUserCreatedEvent(@Valid CreateUserEvent event) {

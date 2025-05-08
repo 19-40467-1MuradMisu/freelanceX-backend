@@ -23,7 +23,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.user-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     public void consumeUserCreatedEvent(@Valid CreateUserEvent event) {
         this.userService.createUser(event);
@@ -31,7 +31,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.user-updated}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler"
     )
     public void consumeUserUpdatedEvent(@Valid UpdateUserEvent event) {
@@ -40,7 +40,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     public void consumeJobCreatedEvent(@Valid CreateJobEvent event) {
         this.jobService.createJob(event);
@@ -48,7 +48,7 @@ public class KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     public void consumeJobUpdatedEvent(@Valid updateJobEvent event) {
         this.jobService.updateJob(event);

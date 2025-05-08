@@ -29,7 +29,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.user-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
     public void consumeUserCreatedEvent(@Valid CreateUserEvent event) {
@@ -38,7 +38,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.user-updated}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler"
     )
     @Override
@@ -48,7 +48,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
     public void consumeJobCreatedEvent(@Valid CreateJobEvent event) {
@@ -57,7 +57,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.job-updated}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
     public void consumeJobUpdatedEvent(@Valid UpdateJobEvent event) {
@@ -66,7 +66,7 @@ public class KafkaConsumerServiceImpl implements KafkaConsumerService {
 
     @KafkaListener(
             topics = "${kafka.topics.payment-completed}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     @Override
     public void consumePaymentCompletedEvent(@Valid CompletePaymentEvent event) {
