@@ -1,0 +1,66 @@
+server:
+  port: 8086
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: NotificationService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    consumer:
+      group-id: notification-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: >
+                contract.created:com.freelancex.notificationservice.dtos.contract.CreateContractEvent,
+                review.created:com.freelancex.notificationservice.dtos.rating.CreateRatingEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/notification_service
+    username: postgres
+    password: postgres
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+
+springdoc:
+  swagger-ui:
+    path: /notification/swagger-ui.html
+  api-docs:
+    path: /notification/v3/api-docs
+
+kafka:
+  topics:
+    contract-created: contract.created
+    review-created: review.created
+
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR

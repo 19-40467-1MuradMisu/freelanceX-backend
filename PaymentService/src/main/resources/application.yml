@@ -1,0 +1,75 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: PaymentService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: payment.completed:com.freelancex.paymentservice.dtos.event.payment.CompletePaymentEvent
+
+    consumer:
+      group-id: bidding_event_group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: contract.created:com.freelancex.paymentservice.dtos.event.contract.CreateContractEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/payment_service
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+springdoc:
+  swagger-ui:
+    path: /payment/swagger-ui.html
+  api-docs:
+    path: /payment/v3/api-docs
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+kafka:
+  topics:
+    payment-completed: payment.completed
+    contract-created: contract.created
+
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR

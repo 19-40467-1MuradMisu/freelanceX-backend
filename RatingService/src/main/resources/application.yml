@@ -1,0 +1,83 @@
+server:
+  port: 8085
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: RatingService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: >
+                rating.created:com.freelancex.ratingservice.dtos.event.rating.CreateRatingEvent
+
+    consumer:
+      group-id: rating_event_group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: >
+                user.created:com.freelancex.ratingservice.dtos.event.user.CreateUserEvent,
+                user.updated:com.freelancex.ratingservice.dtos.event.user.UpdateUserEvent,
+                job.created:com.freelancex.ratingservice.dtos.event.job.CreateJobEvent,
+                job.updated:com.freelancex.ratingservice.dtos.event.job.updateJobEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/rating_service
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+springdoc:
+  swagger-ui:
+    path: /rating/swagger-ui.html
+  api-docs:
+    path: /rating/v3/api-docs
+
+kafka:
+  topics:
+    job-created: job.created
+    job-updated: job.updated
+    user-created: user.created
+    user-updated: user.updated
+    review-created: review.created
+
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR

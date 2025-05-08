@@ -1,0 +1,74 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ApiGateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: bid-service
+          uri: lb://BiddingService
+          predicates:
+            - Path=/api/bid/**
+
+        - id: contract-service
+          uri: lb://BiddingService
+          predicates:
+            - Path=/api/contract/**
+
+        - id: job-service
+          uri: lb://JobService
+          predicates:
+            - Path=/api/jobs/**
+
+        - id: notification-service
+          uri: lb://NotificationService
+          predicates:
+            - Path=/api/notifications/**
+
+        - id: payment-service
+          uri: lb://PaymentService
+          predicates:
+            - Path=/api/payment/**
+
+        - id: rating-service
+          uri: lb://RatingService
+          predicates:
+            - Path=/api/ratings/**
+
+        - id: skill-service
+          uri: lb://SkillService
+          predicates:
+            - Path=/api/skill/**
+
+        - id: user-auth
+          uri: lb://UserService
+          predicates:
+            - Path=/api/auth/**
+
+        - id: user-management
+          uri: lb://UserService
+          predicates:
+            - Path=/api/user/**
+
+    discovery:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+  endpoint:
+    gateway:
+      access: unrestricted
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true

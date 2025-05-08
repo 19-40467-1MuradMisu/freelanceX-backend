@@ -1,0 +1,79 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: UserService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: user.created:com.freelancex.userservice.dtos.event.CreateUserEvent
+
+    consumer:
+      group-id: user_event_group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: skill.verified:com.freelancex.userservice.dtos.event.SkillVerifiedEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/user_service
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR
+
+jwt:
+  expiration: 86400000
+  secret: wVr5k6M9qswkmvWbqGbD+yulTD8gd+Mm6HXyNkp9TiA=
+
+kafka:
+  topics:
+    skill-verified: skill.verified
+    user-created: user.created
+
+springdoc:
+  swagger-ui:
+    path: /user/swagger-ui.html
+  api-docs:
+    path: /user/v3/api-docs
