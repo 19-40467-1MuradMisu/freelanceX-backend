@@ -3,7 +3,6 @@ package com.freelancex.jobservice.controller;
 import com.freelancex.jobservice.dtos.common.ApiResponse;
 import com.freelancex.jobservice.models.Job;
 import com.freelancex.jobservice.services.JobServiceImpl;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,16 +44,17 @@ public class JobController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/client")
-    public ResponseEntity<ApiResponse<Job>> updateJob(@PathVariable UUID id, @RequestBody Job jobDetails) {
-        Job updatedJob = jobService.updateJob(id, jobDetails);
+    @PutMapping("/{id}/client/{clientId}")
+    public ResponseEntity<ApiResponse<Job>> updateJob(@PathVariable UUID id, @PathVariable UUID clientId,
+                                                      @RequestBody Job jobDetails) {
+        Job updatedJob = jobService.updateJob(id, clientId, jobDetails);
         ApiResponse<Job> response = new ApiResponse<>("Job updated successfully", HttpStatus.OK.value(), updatedJob);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}/client")
-    public ResponseEntity<ApiResponse<Void>> deleteJob(@PathVariable UUID id) {
-        jobService.deleteJob(id);
+    @DeleteMapping("/{id}/client/{clientId}")
+    public ResponseEntity<ApiResponse<Void>> deleteJob(@PathVariable UUID id, @PathVariable UUID clientId) {
+        jobService.deleteJob(id, clientId);
         ApiResponse<Void> response = new ApiResponse<>("Job deleted successfully", HttpStatus.OK.value(), null);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

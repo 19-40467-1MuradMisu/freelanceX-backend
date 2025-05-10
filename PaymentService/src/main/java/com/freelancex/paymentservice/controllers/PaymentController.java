@@ -30,14 +30,6 @@ public class PaymentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ApiResponse<List<Payment>>> getPayments() {
-        List<Payment> payments = paymentService.getPayments();
-
-        ApiResponse<List<Payment>> response = new ApiResponse<>("success", HttpStatus.OK.value(), payments);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     @PatchMapping("{id}/client/release")
     public ResponseEntity<ApiResponse> releasePayment(@PathVariable UUID id) {
         paymentService.releasePayment(id);

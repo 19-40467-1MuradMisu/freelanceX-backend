@@ -6,6 +6,8 @@ import com.freelancex.jobservice.exceptions.ApiException;
 import com.freelancex.jobservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.jobservice.models.Job;
 import com.freelancex.jobservice.repositories.JobRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +18,7 @@ import java.util.UUID;
 @Service
 public class JobServiceImpl  {
 
-    // private static final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
     private final JobRepository jobRepository;
     private final KafkaProducerServiceImpl kafkaProducer;
@@ -32,6 +34,7 @@ public class JobServiceImpl  {
         CreateJobEvent event = new CreateJobEvent(saveJob.getJobId(), saveJob.getClientId(),
                 saveJob.getStatus(), saveJob.getBudget(), saveJob.getTitle());
         this.kafkaProducer.sendJobCreatedEvent(event);
+        logger.info("Job: {} created", saveJob.getJobId());
         return saveJob;
     }
 
@@ -45,10 +48,8 @@ public class JobServiceImpl  {
         return jobRepository.findById(jobId);
     }
 
-
-    public Job updateJob(UUID jobId, Job jobDetails) {
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
+    public Job updateJob(UUID jobId, UUID clientId, Job jobDetails) {
+        Job job = getJobByJobIdAndClientId(jobId, clientId);
 
         job.setTitle(jobDetails.getTitle());
         job.setDescription(jobDetails.getDescription());
@@ -59,15 +60,17 @@ public class JobServiceImpl  {
         updateJobEvent event = new updateJobEvent(saveJob.getJobId(), saveJob.getClientId(),
                 saveJob.getStatus(), saveJob.getBudget(), saveJob.getTitle());
         this.kafkaProducer.sendJobUpdatedEvent(event);
+        logger.info("Job: {} updated", saveJob.getJobId());
         return saveJob;
-
-       
     }
 
-
-    public void deleteJob(UUID jobId) {
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
+    public void deleteJob(UUID jobId, UUID clientId) {
+        Job job = getJobByJobIdAndClientId(jobId, clientId);
         jobRepository.delete(job);
+    }
+
+    public Job getJobByJobIdAndClientId(UUID jobId, UUID clientId) {
+        return jobRepository.findJobByJobIdAndClientId(jobId, clientId)
+                .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
     }
 }
