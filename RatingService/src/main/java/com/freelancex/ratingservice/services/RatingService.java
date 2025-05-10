@@ -45,9 +45,9 @@ public class RatingService {
         return savedRating;
     }
 
-    public Rating updateRating(UUID ratingId, Rating newRatingData) {
+    public Rating updateRating(UUID ratingId, UUID UserId, Rating newRatingData) {
 
-        Rating existingRating = getRatingsById(ratingId);
+        Rating existingRating = getRatingByRatingIdAndUserId(ratingId, UserId);
         existingRating.setScore(newRatingData.getScore());
         existingRating.setComment(newRatingData.getComment());
         return ratingRepository.save(existingRating);
@@ -58,7 +58,6 @@ public class RatingService {
     }
 
     public List<Rating> getRatingsByJobId(UUID jobId) {
-        logger.info("Fetching ratings for jobId: {}", jobId);
         return ratingRepository.findAllByJobId(jobId);
     }
 
@@ -66,18 +65,13 @@ public class RatingService {
         return ratingRepository.findAllByUserId(userId);
     }
 
-    public Rating getRatingsById(UUID id) {
-        return ratingRepository.findById(id)
-            .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
-    }
-
-    public Rating getRatingByJobIdAndUserId(UUID jobId, UUID userId) {
-        return ratingRepository.findByJobIdAndUserId(jobId, userId)
-            .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
+    public Rating getRatingByRatingIdAndUserId(UUID ratingId, UUID userId) {
+        return ratingRepository.findByRatingIdAndUserId(ratingId, userId)
+                .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
     }
 
     public void deleteRating(UUID jobId, UUID userId) {
-        Rating rating = getRatingByJobIdAndUserId(jobId, userId);
+        Rating rating = getRatingByRatingIdAndUserId(jobId, userId);
         ratingRepository.delete(rating);
     }
 }

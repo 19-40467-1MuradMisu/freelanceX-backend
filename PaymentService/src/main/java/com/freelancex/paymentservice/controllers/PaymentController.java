@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController()
@@ -30,15 +29,7 @@ public class PaymentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ApiResponse<List<Payment>>> getPayments() {
-        List<Payment> payments = paymentService.getPayments();
-
-        ApiResponse<List<Payment>> response = new ApiResponse<>("success", HttpStatus.OK.value(), payments);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PatchMapping("{id}/release")
+    @PatchMapping("{id}/client/release")
     public ResponseEntity<ApiResponse> releasePayment(@PathVariable UUID id) {
         paymentService.releasePayment(id);
 

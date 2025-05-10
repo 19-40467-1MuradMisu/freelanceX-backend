@@ -27,7 +27,7 @@ public class BidController {
         this.bidService = bidService;
     }
 
-    @GetMapping("/job/{jobId}")
+    @GetMapping("/client/job/{jobId}")
     @JsonView(Views.ClientBidView.class)
     public ResponseEntity<ApiResponse<List<Bid>>> getBidByJobId(@PathVariable UUID jobId) {
         List<Bid> bids = this.bidService.getBidsByJobId(jobId);
@@ -36,7 +36,7 @@ public class BidController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/user/{freelancerId}")
+    @GetMapping("/freelancer/{freelancerId}")
     @JsonView(Views.FreelancerBidView.class)
     public ResponseEntity<ApiResponse<List<Bid>>> getBidsByFreelancerId(@PathVariable UUID freelancerId) {
         List<Bid> bids = this.bidService.getBidsByFreelancerId(freelancerId);
@@ -55,7 +55,7 @@ public class BidController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping()
+    @PostMapping("/freelancer")
     public ResponseEntity<ApiResponse> createBid(@RequestBody @Valid CreateBidRequest request) {
         this.bidService.createBid(request);
 

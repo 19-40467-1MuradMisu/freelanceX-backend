@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  main:
+    web-application-type: reactive
   application:
     name: ApiGateway
 
@@ -48,10 +50,15 @@ spring:
           predicates:
             - Path=/api/auth/**
 
-        - id: user-management
+        - id: user-profile
           uri: lb://UserService
           predicates:
             - Path=/api/user/**
+
+        - id: admin-management
+          uri: lb://UserService
+          predicates:
+            - Path=/api/admin/**
 
     discovery:
       enabled: true
@@ -104,3 +111,6 @@ springdoc:
 
       - url: /api/skill/v3/api-docs
         name: SkillService
+
+jwt:
+  secret: wVr5k6M9qswkmvWbqGbD+yulTD8gd+Mm6HXyNkp9TiA=
