@@ -17,7 +17,9 @@ spring:
         spring:
           json:
             type:
-              mapping: user.created:com.freelancex.userservice.dtos.event.CreateUserEvent
+              mapping: >
+                user.created:com.freelancex.userservice.dtos.event.CreateUserEvent
+                user.updated:com.freelancex.userservice.dtos.event.UpdateUserEvent
 
     consumer:
       group-id: user_event_group
@@ -71,6 +73,7 @@ kafka:
   topics:
     skill-verified: skill.verified
     user-created: user.created
+    user-updated: user.updated
 
 springdoc:
   swagger-ui:

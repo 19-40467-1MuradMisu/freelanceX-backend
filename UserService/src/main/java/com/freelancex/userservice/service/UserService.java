@@ -2,8 +2,10 @@ package com.freelancex.userservice.service;
 
 import com.freelancex.userservice.dtos.api.CreateUserRequest;
 import com.freelancex.userservice.dtos.api.LoginRequest;
+import com.freelancex.userservice.dtos.api.UpdateUserRequest;
 import com.freelancex.userservice.dtos.event.CreateUserEvent;
 import com.freelancex.userservice.dtos.event.SkillVerifiedEvent;
+import com.freelancex.userservice.dtos.event.UpdateUserEvent;
 import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.jwt.interfaces.JwtService;
 import com.freelancex.userservice.kafka.KafkaProducerService;
@@ -40,18 +42,24 @@ public class UserService {
     }
 
     public String login(LoginRequest request) {
-        User user = getUserByEmail(request.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
+        }
+
+        User user = optionalUser.get();
 
         boolean doesPasswordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!doesPasswordMatch) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
         }
 
-        return jwtService.generateToken(user.getEmail(), user.getRole().name());
+        return jwtService.generateToken(user.getUserId(), user.getRole().name());
     }
 
-    public User createUser(CreateUserRequest request) {
+    public void register(CreateUserRequest request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.email());
 
         if (optionalUser.isPresent()) {
@@ -61,7 +69,7 @@ public class UserService {
         User user = new User();
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setEmail(request.email());
-        user.setRole(UserRole.valueOf(request.role()));
+        user.setRole(request.role());
 
         Profile profile = new Profile();
         profile.setUser(user);
@@ -70,17 +78,15 @@ public class UserService {
         profile.setBio(request.bio());
         user.setProfile(profile);
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(user);
 
         CreateUserEvent event = new CreateUserEvent(user.getUserId(), profile.getFirstName(),
                 profile.getLastName(), user.getRole());
 
         kafkaProducerService.sendUserCreatedEvent(event);
-
-        return savedUser;
     }
 
-    public void updateProfile(SkillVerifiedEvent event) {
+    public void updateSkillVerification(SkillVerifiedEvent event) {
         Optional<User> optionalUser = userRepository.findById(event.userId());
 
         if (optionalUser.isPresent()) {
@@ -94,13 +100,35 @@ public class UserService {
         }
     }
 
+    public void updateUser(UUID userId, UpdateUserRequest request) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        User user = optionalUser.get();
+        Profile profile = user.getProfile();
+        profile.setFirstName(request.firstName());
+        profile.setLastName(request.lastName());
+        profile.setBio(request.bio());
+
+        user.setProfile(profile);
+        userRepository.save(user);
+
+        UpdateUserEvent event = new UpdateUserEvent(user.getUserId(), profile.getFirstName(),
+                profile.getLastName(), user.getRole());
+        kafkaProducerService.sendUserUpdatedEvent(event);
+    }
+
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public User findById(UUID id) {
-        return userRepository.findById(id)
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
