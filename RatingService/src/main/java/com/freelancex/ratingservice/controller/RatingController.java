@@ -29,7 +29,7 @@ public class RatingController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/admin")
     public ResponseEntity<ApiResponse<List<Rating>>> getAllRatings() {
         List<Rating> ratings = ratingService.getAllRatings();
         ApiResponse<List<Rating>> response = new ApiResponse<>("Ratings fetched successfully", HttpStatus.OK.value(), ratings);
@@ -37,30 +37,24 @@ public class RatingController {
     }
 
     @GetMapping("/job/{jobId}")
-    public ResponseEntity<ApiResponse<List<Rating>>> getRatingByJobId(@RequestParam("jobId") UUID jobId) {
+    public ResponseEntity<ApiResponse<List<Rating>>> getRatingByJobId(@PathVariable("jobId") UUID jobId) {
         List<Rating> ratings = ratingService.getRatingsByJobId(jobId);
         ApiResponse<List<Rating>> response = new ApiResponse<>("Ratings fetched successfully", HttpStatus.OK.value(), ratings);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<ApiResponse<List<Rating>>> getRatingByUserId(@RequestParam("userId") UUID userId) {
+    public ResponseEntity<ApiResponse<List<Rating>>> getRatingsByUserId(@PathVariable("userId") UUID userId) {
         List<Rating> ratings = ratingService.getRatingsByUserId(userId);
         ApiResponse<List<Rating>> response = new ApiResponse<>("Ratings fetched successfully", HttpStatus.OK.value(), ratings);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/job/{jobId}/user/{userId}")
-    public ResponseEntity<ApiResponse<Rating>> getRatingByJobIdAndUserId(@PathVariable UUID jobId, @PathVariable UUID userId) {
-        Rating rating = ratingService.getRatingByJobIdAndUserId(jobId, userId);
-        ApiResponse<Rating> response = new ApiResponse<>("Rating fetched successfully", HttpStatus.OK.value(), rating);
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/user/{userId}")
     public ResponseEntity<ApiResponse<Rating>> updateRating(@PathVariable UUID id,
+                                                            @PathVariable UUID userId,
                                                             @RequestBody Rating ratingDetails) {
-        Rating updatedRating = ratingService.updateRating(id, ratingDetails);
+        Rating updatedRating = ratingService.updateRating(id, userId, ratingDetails);
         ApiResponse<Rating> response = new ApiResponse<>("Rating updated successfully", HttpStatus.OK.value(), updatedRating);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -20,6 +20,6 @@ public class KafkaConsumerService {
             errorHandler = "validationErrorHandler")
 
     public void consumeSkillVerifiedEvent(SkillVerifiedEvent event) {
-        this.userService.updateProfile(event);
+        this.userService.updateSkillVerification(event);
     }
 }

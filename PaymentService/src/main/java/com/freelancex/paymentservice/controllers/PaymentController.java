@@ -38,7 +38,7 @@ public class PaymentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PatchMapping("{id}/release")
+    @PatchMapping("{id}/client/release")
     public ResponseEntity<ApiResponse> releasePayment(@PathVariable UUID id) {
         paymentService.releasePayment(id);
 

@@ -23,7 +23,7 @@ public class JobController {
         this.jobService = jobService;
     }
 
-    @PostMapping
+    @PostMapping("/client")
     public ResponseEntity<ApiResponse<Job>> createJob(@RequestBody Job job) {
         Job createdJob = jobService.createJob(job);
         ApiResponse<Job> response = new ApiResponse<>("Job created successfully", HttpStatus.CREATED.value(), createdJob);
@@ -45,14 +45,14 @@ public class JobController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/client")
     public ResponseEntity<ApiResponse<Job>> updateJob(@PathVariable UUID id, @RequestBody Job jobDetails) {
         Job updatedJob = jobService.updateJob(id, jobDetails);
         ApiResponse<Job> response = new ApiResponse<>("Job updated successfully", HttpStatus.OK.value(), updatedJob);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}/client")
     public ResponseEntity<ApiResponse<Void>> deleteJob(@PathVariable UUID id) {
         jobService.deleteJob(id);
         ApiResponse<Void> response = new ApiResponse<>("Job deleted successfully", HttpStatus.OK.value(), null);
