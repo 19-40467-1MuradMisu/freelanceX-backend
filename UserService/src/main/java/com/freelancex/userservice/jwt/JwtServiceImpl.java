@@ -2,7 +2,6 @@ package com.freelancex.userservice.jwt;
 
 import com.freelancex.userservice.jwt.interfaces.JwtService;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -32,7 +31,7 @@ public class JwtServiceImpl implements JwtService {
                 .claim("userId", userId.toString())
                 .subject(userId.toString())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .notBefore(new Date(System.currentTimeMillis() + jwtExpiration))
+                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigningKey())
                 .compact();
     }

@@ -18,7 +18,7 @@ spring:
           json:
             type:
               mapping: >
-                user.created:com.freelancex.userservice.dtos.event.CreateUserEvent
+                user.created:com.freelancex.userservice.dtos.event.CreateUserEvent,
                 user.updated:com.freelancex.userservice.dtos.event.UpdateUserEvent
 
     consumer:

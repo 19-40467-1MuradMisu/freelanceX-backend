@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -37,12 +38,12 @@ public class AdminController {
     }
 
     @GetMapping("/user/role/{role}")
-    public ResponseEntity<?> getAllUsers(@PathVariable UserRole role) {
+    public ResponseEntity<List<User>> getUserByRole(@PathVariable UserRole role) {
         return ResponseEntity.ok(userService.getUsersByRole(role));
     }
 
     @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers() {
+    public ResponseEntity<List<User>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 }
