@@ -55,7 +55,7 @@ public class ContractController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping()
+    @PostMapping("/client")
     public ResponseEntity<ApiResponse> createContract(
             @RequestBody @Valid CreateContractRequest request) {
         this.contractService.createContract(request);
