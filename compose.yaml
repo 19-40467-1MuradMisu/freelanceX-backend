@@ -44,14 +44,13 @@ services:
       - kafka-network
   
   postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: postgres:17
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     networks:
       - freelanceX-network
     healthcheck:
