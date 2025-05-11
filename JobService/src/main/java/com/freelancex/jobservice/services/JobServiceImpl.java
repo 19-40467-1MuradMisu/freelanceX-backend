@@ -73,4 +73,9 @@ public class JobServiceImpl  {
         return jobRepository.findJobByJobIdAndClientId(jobId, clientId)
                 .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
     }
+
+    public List<Job> getJobByClientId(UUID clientId) {
+        return jobRepository.findByClientIdOrderByCreatedAtDesc(clientId);
+
+    }
 }
