@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -44,8 +43,9 @@ public class JobServiceImpl  {
     }
 
 
-    public Optional<Job> getJobById(UUID jobId) {
-        return jobRepository.findById(jobId);
+    public Job getJobById(UUID jobId) {
+        return jobRepository.findById(jobId)
+                .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
     }
 
     public Job updateJob(UUID jobId, UUID clientId, Job jobDetails) {
