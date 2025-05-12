@@ -5,8 +5,6 @@ import com.freelancex.ratingservice.exceptions.ApiException;
 import com.freelancex.ratingservice.kafka.KafkaProducerService;
 import com.freelancex.ratingservice.models.Rating;
 import com.freelancex.ratingservice.repositories.RatingRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,8 +15,6 @@ import java.util.UUID;
 
 @Service
 public class RatingService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RatingService.class);
 
     private final RatingRepository ratingRepository;
     private final KafkaProducerService kafkaProducerService;
@@ -51,10 +47,6 @@ public class RatingService {
         existingRating.setScore(newRatingData.getScore());
         existingRating.setComment(newRatingData.getComment());
         return ratingRepository.save(existingRating);
-    }
-
-    public List<Rating> getAllRatings() {
-        return ratingRepository.findAll();
     }
 
     public List<Rating> getRatingsByJobId(UUID jobId) {

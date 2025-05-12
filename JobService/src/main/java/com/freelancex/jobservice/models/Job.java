@@ -27,6 +27,10 @@ public class Job {
     @Column(name = "client_id", nullable = false)
     private UUID clientId;
 
+    @ManyToOne()
+    @JoinColumn(name = "client_id", insertable = false, updatable = false)
+    private User client;
+
     @Column(nullable = false)
     private String title;
 

@@ -27,12 +27,6 @@ public class RatingController {
         return new ResponseEntity<>(createdRating, HttpStatus.CREATED);
     }
 
-    @GetMapping("/admin")
-    public ResponseEntity<List<Rating>> getAllRatings() {
-        List<Rating> ratings = ratingService.getAllRatings();
-        return new ResponseEntity<>(ratings, HttpStatus.OK);
-    }
-
     @GetMapping("/job/{jobId}")
     public ResponseEntity<List<Rating>> getRatingByJobId(@PathVariable("jobId") UUID jobId) {
         List<Rating> ratings = ratingService.getRatingsByJobId(jobId);
