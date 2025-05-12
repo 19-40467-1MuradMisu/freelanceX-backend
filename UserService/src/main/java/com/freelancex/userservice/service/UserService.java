@@ -50,6 +50,10 @@ public class UserService {
 
         User user = optionalUser.get();
 
+        if (user.isDisabled()){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user disabled.");
+        }
+
         boolean doesPasswordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!doesPasswordMatch) {
@@ -138,5 +142,11 @@ public class UserService {
 
     public List<User> getUsersByRole(UserRole role) {
         return userRepository.findByRole(role);
+    }
+
+    public void disableUser(UUID userId) {
+        User user = getUserById(userId);
+        user.setDisabled(true);
+        userRepository.save(user);
     }
 }

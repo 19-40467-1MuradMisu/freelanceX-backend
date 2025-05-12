@@ -23,7 +23,7 @@ spring:
             type:
               mapping: >
                 contract.created:com.freelancex.notificationservice.dtos.contract.CreateContractEvent,
-                review.created:com.freelancex.notificationservice.dtos.rating.CreateRatingEvent
+                rating.created:com.freelancex.notificationservice.dtos.rating.CreateRatingEvent
           deserializer:
             value:
               delegate:
@@ -58,7 +58,7 @@ springdoc:
 kafka:
   topics:
     contract-created: contract.created
-    review-created: review.created
+    rating-created: rating.created
 
 logging:
   level:

@@ -74,7 +74,7 @@ kafka:
     job-updated: job.updated
     user-created: user.created
     user-updated: user.updated
-    review-created: review.created
+    rating-created: rating.created
 
 logging:
   level:

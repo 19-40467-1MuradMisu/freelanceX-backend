@@ -39,6 +39,11 @@
       "name": "kafka.topics.review-created",
       "type": "java.lang.String",
       "description": "Description for kafka.topics.review-created."
+    },
+    {
+      "name": "kafka.topics.rating-created",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.rating-created."
     }
   ]
 }

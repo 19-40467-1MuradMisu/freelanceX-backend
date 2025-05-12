@@ -23,10 +23,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<User> getUserProfile(@RequestHeader("X-User-Id") String userId) {
-        ;
         User user = userService.getUserById(UUID.fromString(userId));
         return ResponseEntity.ok(user);
     }
-
-
 }

@@ -28,7 +28,7 @@ public class KafkaConsumerServiceImpl {
     }
 
     @KafkaListener(
-            topics = "${kafka.topics.review-created}",
+            topics = "${kafka.topics.rating-created}",
             groupId = "${spring.kafka.consumer.group-id}",
             containerFactory = "kafkaListenerContainerFactory")
     public void consumeRatingCreatedEvent(CreateRatingEvent event) {

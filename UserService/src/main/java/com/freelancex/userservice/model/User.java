@@ -36,6 +36,10 @@ public class User {
     private UserRole role = UserRole.FREELANCER;
 
     @Setter
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private boolean disabled;
+
+    @Setter
     @CreatedDate
     @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
