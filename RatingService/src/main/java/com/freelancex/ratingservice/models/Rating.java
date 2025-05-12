@@ -30,6 +30,14 @@ public class Rating {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
+    @ManyToOne()
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
+
+    @ManyToOne()
+    @JoinColumn(name = "job_id", insertable = false, updatable = false)
+    private Job job;
+
     @Column(nullable = false)
     @Enumerated(EnumType.ORDINAL)
     private Score score; 
