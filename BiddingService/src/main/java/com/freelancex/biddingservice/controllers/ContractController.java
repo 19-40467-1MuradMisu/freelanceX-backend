@@ -48,6 +48,14 @@ public class ContractController {
         return ResponseEntity.ok(contract);
     }
 
+    @GetMapping("{id}/freelancer/{freelancerId}")
+    @JsonView(Views.FreelancerContractView.class)
+    public ResponseEntity<Contract> getContractByFreelancerId(@PathVariable UUID id,
+                                                          @PathVariable UUID freelancerId) {
+        Contract contract = this.contractService.getContractByFreelancerId(id, freelancerId);
+        return ResponseEntity.ok(contract);
+    }
+
     @PostMapping("/client")
     public ResponseEntity<Void> createContract(
             @RequestBody @Valid CreateContractRequest request) {

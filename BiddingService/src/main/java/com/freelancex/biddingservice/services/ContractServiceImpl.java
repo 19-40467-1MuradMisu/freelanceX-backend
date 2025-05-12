@@ -61,6 +61,18 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public Contract getContractByFreelancerId(UUID contractId, UUID freelancerId) throws ApiException {
+        Optional<Contract> contract = contractRepository.findByContractIdAndBidFreelancerId(contractId,
+                freelancerId);
+
+        if (contract.isEmpty()) {
+            throw new ApiException("Contract not found", HttpStatus.NOT_FOUND);
+        }
+
+        return contract.get();
+    }
+
+    @Override
     public void createContract(CreateContractRequest request) throws ApiException {
         Optional<Contract> existingContract = contractRepository.findByJobIdOrBidId(request.getJobId(),
                 request.getBidId());

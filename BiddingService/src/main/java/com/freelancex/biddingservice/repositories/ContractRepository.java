@@ -18,4 +18,6 @@ public interface ContractRepository extends JpaRepository<Contract, UUID> {
     Optional<Contract> findByJobIdOrBidId(UUID jobId, UUID bidId);
 
     Optional<Contract> findByContractIdAndJobClientId(UUID contractId, UUID clientId);
+
+    Optional<Contract> findByContractIdAndBidFreelancerId(UUID contractId, UUID bidFreelancerId);
 }
