@@ -85,7 +85,13 @@ public class JobServiceImpl  {
         Job job = getJobById(event.jobId());
 
         job.setStatus(JobStatus.CLOSED);
-        jobRepository.save(job);
+        Job savedJob = jobRepository.save(job);
         logger.info("Job: {} closed", event.jobId());
+
+        updateJobEvent event1 = new updateJobEvent(savedJob.getJobId(), savedJob.getClientId(),
+                savedJob.getStatus(), savedJob.getBudget(), savedJob.getTitle());
+        this.kafkaProducer.sendJobUpdatedEvent(event1);
+
+        logger.info("Job: {} updated", event.jobId());
     }
 }

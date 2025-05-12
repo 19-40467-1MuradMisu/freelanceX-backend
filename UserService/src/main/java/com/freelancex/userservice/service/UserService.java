@@ -146,7 +146,7 @@ public class UserService {
 
     public void disableUser(UUID userId) {
         User user = getUserById(userId);
-        user.setDisabled(true);
+        user.setDisabled(!user.isDisabled());
         userRepository.save(user);
     }
 }

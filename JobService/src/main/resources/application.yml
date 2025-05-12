@@ -19,8 +19,7 @@ spring:
             type:
               mapping: >
                 job.created:com.freelancex.jobservice.dtos.event.job.CreateJobEvent,
-                job.updated:com.freelancex.jobservice.dtos.event.job.updateJobEvent,
-                contract.completed:com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent
+                job.updated:com.freelancex.jobservice.dtos.event.job.updateJobEvent
 
     consumer:
       group-id: job_event_group
@@ -32,7 +31,9 @@ spring:
             trusted:
               packages: "*"
             type:
-              mapping: user.created:com.freelancex.jobservice.dtos.event.user.CreateUserEvent
+              mapping: > 
+                user.created:com.freelancex.jobservice.dtos.event.user.CreateUserEvent,
+                contract.completed:com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent
           deserializer:
             value:
               delegate:
