@@ -19,7 +19,8 @@ spring:
             type:
               mapping: >
                 job.created:com.freelancex.jobservice.dtos.event.job.CreateJobEvent,
-                job.updated:com.freelancex.jobservice.dtos.event.job.updateJobEvent
+                job.updated:com.freelancex.jobservice.dtos.event.job.updateJobEvent,
+                contract.completed:com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent
 
     consumer:
       group-id: job_event_group
@@ -71,7 +72,7 @@ kafka:
     job-created: job.created
     job-updated: job.updated
     user-created: user.created
-
+    contract-completed: contract.completed
 logging:
   level:
     com: INFO

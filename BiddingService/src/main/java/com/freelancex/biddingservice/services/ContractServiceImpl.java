@@ -2,6 +2,7 @@ package com.freelancex.biddingservice.services;
 
 import com.freelancex.biddingservice.dtos.api.contract.CreateContractRequest;
 import com.freelancex.biddingservice.dtos.api.contract.UpdateContractRequest;
+import com.freelancex.biddingservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
 import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.exceptions.ApiException;
@@ -121,6 +122,9 @@ public class ContractServiceImpl implements ContractService {
             contractRepository.save(contractToUpdate);
 
             logger.info("Contract: {} status updated successfully", event.contractId());
+
+            CompletedContractEvent event1 = new CompletedContractEvent(contract.get().getJobId());
+            this.kafkaProducerService.sendContractCompletedEvent(event1);
         }
     }
 }

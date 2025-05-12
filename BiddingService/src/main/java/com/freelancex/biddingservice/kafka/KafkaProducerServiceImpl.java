@@ -1,5 +1,6 @@
 package com.freelancex.biddingservice.kafka;
 
+import com.freelancex.biddingservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
 import com.freelancex.biddingservice.kafka.interfaces.KafkaProducerService;
 import org.slf4j.Logger;
@@ -12,18 +13,29 @@ import org.springframework.stereotype.Service;
 public class KafkaProducerServiceImpl implements KafkaProducerService {
     private static final Logger logger = LoggerFactory.getLogger(KafkaProducerServiceImpl.class);
 
-    private final KafkaTemplate<String, CreateContractEvent> contractEventKafkaTemplate;
+    private final KafkaTemplate<String, CreateContractEvent> contractCreatedTemplate;
+    private final KafkaTemplate<String, CompletedContractEvent> contractCompletedTemplate;
 
     @Value("${kafka.topics.contract-created}")
     private String contractCreatedTopic;
 
-    public KafkaProducerServiceImpl(KafkaTemplate<String, CreateContractEvent> template) {
-        this.contractEventKafkaTemplate = template;
+    @Value("${kafka.topics.contract-completed}")
+    private String contractCompletedTopic;
+
+    public KafkaProducerServiceImpl(KafkaTemplate<String, CreateContractEvent> template1,
+                                    KafkaTemplate<String, CompletedContractEvent> template2) {
+        this.contractCreatedTemplate = template1;
+        this.contractCompletedTemplate = template2;
     }
 
     @Override
     public void sendContractCreatedEvent(CreateContractEvent event) {
-        sendEvent(contractEventKafkaTemplate, contractCreatedTopic, event.contractId().toString(), event);
+        sendEvent(contractCreatedTemplate, contractCreatedTopic, event.contractId().toString(), event);
+    }
+
+    @Override
+    public void sendContractCompletedEvent(CompletedContractEvent event) {
+        sendEvent(contractCompletedTemplate, contractCompletedTopic, event.jobId().toString(), event);
     }
 
     private <T> void sendEvent(KafkaTemplate<String, T> template, String topic, String key, T event) {

@@ -29,5 +29,10 @@
       "name": "kafka.topics.payment-completed",
       "type": "java.lang.String",
       "description": "Description for kafka.topics.payment-completed."
+    },
+    {
+      "name": "kafka.topics.contract-completed",
+      "type": "java.lang.String",
+      "description": "Description for kafka.topics.contract-completed."
     }
   ] }

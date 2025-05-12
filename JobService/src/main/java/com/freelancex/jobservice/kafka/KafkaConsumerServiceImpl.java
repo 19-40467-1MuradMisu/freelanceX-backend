@@ -1,5 +1,6 @@
 package com.freelancex.jobservice.kafka;
 
+import com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.jobservice.dtos.event.job.CreateJobEvent;
 
 import com.freelancex.jobservice.dtos.event.user.CreateUserEvent;
@@ -14,11 +15,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class KafkaConsumerServiceImpl  {
-    @Autowired()
-    private final UserServiceImpl userService;
 
-    public KafkaConsumerServiceImpl(UserServiceImpl userService
-                                    ) {
+    private final UserServiceImpl userService;
+    private final JobServiceImpl jobService;
+
+    public KafkaConsumerServiceImpl(UserServiceImpl userService, JobServiceImpl jobService) {
+        this.jobService = jobService;
         this.userService = userService;
     }
 
@@ -29,5 +31,14 @@ public class KafkaConsumerServiceImpl  {
 
     public void consumeUserCreatedEvent(@Valid CreateUserEvent event) {
         this.userService.createUser(event);
+    }
+
+    @KafkaListener(
+            topics = "${kafka.topics.contract-completed}",
+            groupId = "${spring.kafka.consumer.group-id}",
+            errorHandler = "validationErrorHandler")
+
+    public void consumeContractCompletedEvent(@Valid CompletedContractEvent event) {
+        this.jobService.closeJob(event);
     }
 }

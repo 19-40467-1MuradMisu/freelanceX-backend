@@ -1,7 +1,9 @@
 package com.freelancex.jobservice.services;
 
+import com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.jobservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.jobservice.dtos.event.job.updateJobEvent;
+import com.freelancex.jobservice.enums.JobStatus;
 import com.freelancex.jobservice.exceptions.ApiException;
 import com.freelancex.jobservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.jobservice.models.Job;
@@ -77,5 +79,13 @@ public class JobServiceImpl  {
     public List<Job> getJobByClientId(UUID clientId) {
         return jobRepository.findByClientIdOrderByCreatedAtDesc(clientId);
 
+    }
+
+    public void closeJob(CompletedContractEvent event) {
+        Job job = getJobById(event.jobId());
+
+        job.setStatus(JobStatus.CLOSED);
+        jobRepository.save(job);
+        logger.info("Job: {} closed", event.jobId());
     }
 }

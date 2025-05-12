@@ -17,7 +17,10 @@ spring:
         spring:
           json:
             type:
-              mapping: contract.created:com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent
+              mapping: >
+                contract.created:com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent,
+                contract.completed:com.freelancex.biddingservice.dtos.event.contract.CompletedContractEvent
+                
 
     consumer:
       group-id: bidding_event_group
@@ -68,6 +71,7 @@ kafka:
     job-created: job.created
     job-updated: job.updated
     contract-created: contract.created
+    contract-completed: contract.completed
     payment-completed: payment.completed
     user-created: user.created
     user-updated: user.updated
