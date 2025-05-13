@@ -2,7 +2,8 @@ package com.freelancex.notificationservice.kafka;
 
 import com.freelancex.notificationservice.dtos.contract.CreateContractEvent;
 import com.freelancex.notificationservice.dtos.rating.CreateRatingEvent;
-import com.freelancex.notificationservice.service.NotificationService;
+import com.freelancex.notificationservice.service.interfaces.NotificationService;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

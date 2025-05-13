@@ -1,4 +1,4 @@
-package com.freelancex.jobservice.services;
+package com.freelancex.jobservice.service.impl;
 
 import com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.jobservice.dtos.event.job.CreateJobEvent;
@@ -8,6 +8,8 @@ import com.freelancex.jobservice.exceptions.ApiException;
 import com.freelancex.jobservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.jobservice.models.Job;
 import com.freelancex.jobservice.repositories.JobRepository;
+import com.freelancex.jobservice.service.interfaces.JobService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class JobServiceImpl  {
+public class JobServiceImpl implements JobService {
 
     private static final Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
@@ -29,7 +31,7 @@ public class JobServiceImpl  {
         this.kafkaProducer = kafkaProducer;
     }
 
-
+    @Override
     public Job createJob(Job job) {
         Job saveJob = jobRepository.save(job);
         CreateJobEvent event = new CreateJobEvent(saveJob.getJobId(), saveJob.getClientId(),
@@ -39,17 +41,18 @@ public class JobServiceImpl  {
         return saveJob;
     }
 
-
+    @Override
     public List<Job> getAllJobs() {
         return jobRepository.findAll();
     }
 
-
+    @Override
     public Job getJobById(UUID jobId) {
         return jobRepository.findById(jobId)
                 .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
     }
 
+    @Override
     public Job updateJob(UUID jobId, UUID clientId, Job jobDetails) {
         Job job = getJobByJobIdAndClientId(jobId, clientId);
 
@@ -66,21 +69,24 @@ public class JobServiceImpl  {
         return saveJob;
     }
 
+    @Override
     public void deleteJob(UUID jobId, UUID clientId) {
         Job job = getJobByJobIdAndClientId(jobId, clientId);
         jobRepository.delete(job);
     }
 
+    @Override
     public Job getJobByJobIdAndClientId(UUID jobId, UUID clientId) {
         return jobRepository.findJobByJobIdAndClientId(jobId, clientId)
                 .orElseThrow(() -> new ApiException("Job not found", HttpStatus.NOT_FOUND));
     }
 
+    @Override
     public List<Job> getJobByClientId(UUID clientId) {
         return jobRepository.findByClientIdOrderByCreatedAtDesc(clientId);
-
     }
 
+    @Override
     public void closeJob(CompletedContractEvent event) {
         Job job = getJobById(event.jobId());
 

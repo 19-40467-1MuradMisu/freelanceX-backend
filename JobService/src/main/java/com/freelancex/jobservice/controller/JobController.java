@@ -2,7 +2,8 @@ package com.freelancex.jobservice.controller;
 
 import com.freelancex.jobservice.dtos.common.ApiResponse;
 import com.freelancex.jobservice.models.Job;
-import com.freelancex.jobservice.services.JobServiceImpl;
+import com.freelancex.jobservice.service.impl.JobServiceImpl;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
