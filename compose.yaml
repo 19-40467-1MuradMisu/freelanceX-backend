@@ -121,7 +121,7 @@ services:
     build: ./BiddingService
     image: freelancex-backend-bidservice
     ports:
-      - "8083:8083"
+      - "8089:8083"
     networks:
       - freelanceX-network
     depends_on:

@@ -4,8 +4,9 @@ import com.freelancex.ratingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.ratingservice.dtos.event.job.updateJobEvent;
 import com.freelancex.ratingservice.dtos.event.user.CreateUserEvent;
 import com.freelancex.ratingservice.dtos.event.user.UpdateUserEvent;
-import com.freelancex.ratingservice.services.JobService;
-import com.freelancex.ratingservice.services.UserService;
+import com.freelancex.ratingservice.services.interfaces.JobService;
+import com.freelancex.ratingservice.services.interfaces.UserService;
+
 import jakarta.validation.Valid;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;

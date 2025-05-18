@@ -2,9 +2,19 @@ package com.freelancex.biddingservice.dtos.common;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.freelancex.biddingservice.views.Views;
-import lombok.Builder;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonView({Views.BaseView.class})
-public record ApiResponse<T>(String message, int statusCode, T data) {
+public class ApiResponse<T> {
+    private String message;
+    private int statusCode;
+    private T data;
 }

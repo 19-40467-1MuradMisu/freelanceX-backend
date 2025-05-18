@@ -4,8 +4,8 @@ import com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.jobservice.dtos.event.job.CreateJobEvent;
 
 import com.freelancex.jobservice.dtos.event.user.CreateUserEvent;
-import com.freelancex.jobservice.services.JobServiceImpl;
-import com.freelancex.jobservice.services.UserServiceImpl;
+import com.freelancex.jobservice.service.impl.JobServiceImpl;
+import com.freelancex.jobservice.service.impl.UserServiceImpl;
 
 import jakarta.validation.Valid;
 

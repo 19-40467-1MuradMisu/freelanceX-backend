@@ -2,7 +2,8 @@ package com.freelancex.notificationservice.service.impl;
 
 import com.freelancex.notificationservice.model.Notification;
 import com.freelancex.notificationservice.repository.NotificationRepository;
-import com.freelancex.notificationservice.service.NotificationService;
+import com.freelancex.notificationservice.service.interfaces.NotificationService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

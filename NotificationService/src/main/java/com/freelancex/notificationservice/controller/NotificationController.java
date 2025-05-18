@@ -1,7 +1,8 @@
 package com.freelancex.notificationservice.controller;
 
 import com.freelancex.notificationservice.model.Notification;
-import com.freelancex.notificationservice.service.NotificationService;
+import com.freelancex.notificationservice.service.interfaces.NotificationService;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;

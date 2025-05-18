@@ -1,4 +1,4 @@
-package com.freelancex.notificationservice.service;
+package com.freelancex.notificationservice.service.interfaces;
 
 import com.freelancex.notificationservice.model.Notification;
 
