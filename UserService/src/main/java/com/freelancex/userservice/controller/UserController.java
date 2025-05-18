@@ -3,7 +3,8 @@ package com.freelancex.userservice.controller;
 import com.freelancex.userservice.dtos.api.UpdateUserRequest;
 import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.model.User;
-import com.freelancex.userservice.service.UserService;
+import com.freelancex.userservice.service.interfaces.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

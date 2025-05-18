@@ -1,27 +1,30 @@
-package com.freelancex.skillservice.services;
+package com.freelancex.skillservice.services.impl;
 
 import com.freelancex.skillservice.dtos.SkillVerifiedEvent;
 import com.freelancex.skillservice.kafka.KafkaProducerServiceImpl;
 import com.freelancex.skillservice.model.Certification;
 import com.freelancex.skillservice.repository.CertificationRepository;
+import com.freelancex.skillservice.services.interfaces.VerificationService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-public class VerificationService {
+public class VerificationServiceImpl implements VerificationService {
 
     private final CertificationRepository certificationRepository;
     private final KafkaProducerServiceImpl kafkaProducerService;
-   
+
     private static final List<String> SUPPORTED_SKILLS = List.of("java", "python", "javascript");
 
-    public VerificationService(CertificationRepository certificationRepository, KafkaProducerServiceImpl kafkaProducerService) {
-        this.kafkaProducerService = kafkaProducerService;
+    public VerificationServiceImpl(CertificationRepository certificationRepository,
+                                   KafkaProducerServiceImpl kafkaProducerService) {
         this.certificationRepository = certificationRepository;
+        this.kafkaProducerService = kafkaProducerService;
     }
 
+    @Override
     public Certification verifySkill(UUID userId, String skills) {
         List<String> skillList = List.of(skills.split(","));
 

@@ -3,7 +3,8 @@ package com.freelancex.userservice.controller;
 import com.freelancex.userservice.dtos.api.CreateUserRequest;
 import com.freelancex.userservice.dtos.api.LoginRequest;
 import com.freelancex.userservice.dtos.api.LoginResponse;
-import com.freelancex.userservice.service.UserService;
+import com.freelancex.userservice.service.interfaces.UserService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

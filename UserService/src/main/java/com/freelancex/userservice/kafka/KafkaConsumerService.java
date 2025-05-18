@@ -1,7 +1,8 @@
 package com.freelancex.userservice.kafka;
 
 import com.freelancex.userservice.dtos.event.SkillVerifiedEvent;
-import com.freelancex.userservice.service.UserService;
+import com.freelancex.userservice.service.interfaces.UserService;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

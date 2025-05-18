@@ -1,7 +1,8 @@
 package com.freelancex.ratingservice.controller;
 
 import com.freelancex.ratingservice.models.Rating;
-import com.freelancex.ratingservice.services.RatingService;
+import com.freelancex.ratingservice.services.interfaces.RatingService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
