@@ -7,7 +7,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 public interface KafkaConsumer {
     @KafkaListener(
             topics = "${kafka.topics.contract-created}",
-            groupId = "${spring.kafka.consumer.json.group-id}",
+            groupId = "${spring.kafka.consumer.group-id}",
             errorHandler = "validationErrorHandler")
     void consumeContractCreatedEvent(@Valid CreateContractEvent event);
 }

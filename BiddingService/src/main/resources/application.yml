@@ -1,0 +1,88 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: BiddingService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: >
+                contract.created:com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent,
+                contract.completed:com.freelancex.biddingservice.dtos.event.contract.CompletedContractEvent
+                
+
+    consumer:
+      group-id: bidding_event_group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: >
+                user.created:com.freelancex.biddingservice.dtos.event.user.CreateUserEvent,
+                user.updated:com.freelancex.biddingservice.dtos.event.user.UpdateUserEvent,
+                job.created:com.freelancex.biddingservice.dtos.event.job.CreateJobEvent,
+                job.updated:com.freelancex.biddingservice.dtos.event.job.UpdateJobEvent,
+                payment.completed:com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/bidding_service
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+kafka:
+  topics:
+    job-created: job.created
+    job-updated: job.updated
+    contract-created: contract.created
+    contract-completed: contract.completed
+    payment-completed: payment.completed
+    user-created: user.created
+    user-updated: user.updated
+
+springdoc:
+  swagger-ui:
+    path: /bid/swagger-ui.html
+  api-docs:
+    path: /bid/v3/api-docs
+
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR

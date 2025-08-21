@@ -16,6 +16,8 @@ public interface ContractService {
 
     Contract getContractByClientId(UUID contractId, UUID clientId) throws ApiException;
 
+    Contract getContractByFreelancerId(UUID contractId, UUID freelancerId) throws ApiException;
+
     void createContract(CreateContractRequest request) throws ApiException;
 
     void updateContractTerms(UUID contractId, UUID clientId,

@@ -13,7 +13,7 @@ public class KafkaProducerService {
 
     private final KafkaTemplate<String, CreateRatingEvent> ratingEventKafkaTemplate;
 
-    @Value("${kafka.topics.review-created}")
+    @Value("${kafka.topics.rating-created}")
     private String contractCreatedTopic;
 
     public KafkaProducerService(KafkaTemplate<String, CreateRatingEvent> template) {

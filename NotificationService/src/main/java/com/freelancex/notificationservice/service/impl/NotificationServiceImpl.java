@@ -2,7 +2,10 @@ package com.freelancex.notificationservice.service.impl;
 
 import com.freelancex.notificationservice.model.Notification;
 import com.freelancex.notificationservice.repository.NotificationRepository;
-import com.freelancex.notificationservice.service.NotificationService;
+import com.freelancex.notificationservice.service.interfaces.NotificationService;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,6 +13,8 @@ import java.util.UUID;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
+
+    private final Logger log = LoggerFactory.getLogger(NotificationServiceImpl.class);
 
     private final NotificationRepository repository;
 
@@ -29,6 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
         notificationLog.setType(eventType);
         notificationLog.setContent(content);
         repository.save(notificationLog);
+        log.info("Notification created: {}", notificationLog.getType());
     }
 }
 

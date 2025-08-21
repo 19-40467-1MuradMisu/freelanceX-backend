@@ -1,9 +1,10 @@
-package com.freelancex.ratingservice.services;
+package com.freelancex.ratingservice.services.impl;
 
 import com.freelancex.ratingservice.dtos.event.job.CreateJobEvent;
 import com.freelancex.ratingservice.dtos.event.job.updateJobEvent;
 import com.freelancex.ratingservice.models.Job;
 import com.freelancex.ratingservice.repositories.JobRepository;
+import com.freelancex.ratingservice.services.interfaces.JobService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,16 +14,17 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class JobService {
+public class JobServiceImpl implements JobService {
+
     private final JobRepository jobRepository;
-    private final static Logger logger = LoggerFactory.getLogger(JobService.class);
+    private final static Logger logger = LoggerFactory.getLogger(JobServiceImpl.class);
 
     @Autowired
-    public JobService(JobRepository jobRepository) {
+    public JobServiceImpl(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
 
-
+    @Override
     public void createJob(CreateJobEvent event) {
         Job job = new Job();
 
@@ -36,7 +38,7 @@ public class JobService {
         logger.info("Job created: {}", job.getJobId());
     }
 
-  
+    @Override
     public void updateJob(updateJobEvent event) {
         Optional<Job> job = jobRepository.findById(event.jobId());
 

@@ -1,12 +1,11 @@
-package com.freelancex.ratingservice.services;
+package com.freelancex.ratingservice.services.impl;
 
 import com.freelancex.ratingservice.dtos.event.rating.CreateRatingEvent;
 import com.freelancex.ratingservice.exceptions.ApiException;
 import com.freelancex.ratingservice.kafka.KafkaProducerService;
 import com.freelancex.ratingservice.models.Rating;
 import com.freelancex.ratingservice.repositories.RatingRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.freelancex.ratingservice.services.interfaces.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,22 +15,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class RatingService {
-
-    private static final Logger logger = LoggerFactory.getLogger(RatingService.class);
+public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final KafkaProducerService kafkaProducerService;
 
     @Autowired
-    public RatingService(RatingRepository ratingRepository, KafkaProducerService kafkaProducerService) {
+    public RatingServiceImpl(RatingRepository ratingRepository, KafkaProducerService kafkaProducerService) {
         this.ratingRepository = ratingRepository;
         this.kafkaProducerService = kafkaProducerService;
     }
 
+    @Override
     public Rating createRating(Rating rating) {
-        Optional<Rating> ratingOptional = ratingRepository.findByJobIdAndUserId(rating.getJobId(),
-                rating.getUserId());
+        Optional<Rating> ratingOptional = ratingRepository.findByJobIdAndUserId(
+                rating.getJobId(), rating.getUserId());
 
         if (ratingOptional.isPresent()) {
             throw new ApiException("Rating already exists", HttpStatus.CONFLICT);
@@ -45,39 +43,33 @@ public class RatingService {
         return savedRating;
     }
 
-    public Rating updateRating(UUID ratingId, Rating newRatingData) {
-
-        Rating existingRating = getRatingsById(ratingId);
+    @Override
+    public Rating updateRating(UUID ratingId, UUID UserId, Rating newRatingData) {
+        Rating existingRating = getRatingByRatingIdAndUserId(ratingId, UserId);
         existingRating.setScore(newRatingData.getScore());
         existingRating.setComment(newRatingData.getComment());
         return ratingRepository.save(existingRating);
     }
 
-    public List<Rating> getAllRatings() {
-        return ratingRepository.findAll();
-    }
-
+    @Override
     public List<Rating> getRatingsByJobId(UUID jobId) {
-        logger.info("Fetching ratings for jobId: {}", jobId);
         return ratingRepository.findAllByJobId(jobId);
     }
 
+    @Override
     public List<Rating> getRatingsByUserId(UUID userId) {
         return ratingRepository.findAllByUserId(userId);
     }
 
-    public Rating getRatingsById(UUID id) {
-        return ratingRepository.findById(id)
-            .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
+    @Override
+    public Rating getRatingByRatingIdAndUserId(UUID ratingId, UUID userId) {
+        return ratingRepository.findByRatingIdAndUserId(ratingId, userId)
+                .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
     }
 
-    public Rating getRatingByJobIdAndUserId(UUID jobId, UUID userId) {
-        return ratingRepository.findByJobIdAndUserId(jobId, userId)
-            .orElseThrow(() -> new ApiException("Rating not found", HttpStatus.NOT_FOUND));
-    }
-
+    @Override
     public void deleteRating(UUID jobId, UUID userId) {
-        Rating rating = getRatingByJobIdAndUserId(jobId, userId);
+        Rating rating = getRatingByRatingIdAndUserId(jobId, userId);
         ratingRepository.delete(rating);
     }
 }

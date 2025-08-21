@@ -2,6 +2,7 @@ package com.freelancex.biddingservice.services;
 
 import com.freelancex.biddingservice.dtos.api.contract.CreateContractRequest;
 import com.freelancex.biddingservice.dtos.api.contract.UpdateContractRequest;
+import com.freelancex.biddingservice.dtos.event.contract.CompletedContractEvent;
 import com.freelancex.biddingservice.dtos.event.contract.CreateContractEvent;
 import com.freelancex.biddingservice.dtos.event.payment.CompletePaymentEvent;
 import com.freelancex.biddingservice.exceptions.ApiException;
@@ -61,6 +62,18 @@ public class ContractServiceImpl implements ContractService {
     }
 
     @Override
+    public Contract getContractByFreelancerId(UUID contractId, UUID freelancerId) throws ApiException {
+        Optional<Contract> contract = contractRepository.findByContractIdAndBidFreelancerId(contractId,
+                freelancerId);
+
+        if (contract.isEmpty()) {
+            throw new ApiException("Contract not found", HttpStatus.NOT_FOUND);
+        }
+
+        return contract.get();
+    }
+
+    @Override
     public void createContract(CreateContractRequest request) throws ApiException {
         Optional<Contract> existingContract = contractRepository.findByJobIdOrBidId(request.getJobId(),
                 request.getBidId());
@@ -109,6 +122,9 @@ public class ContractServiceImpl implements ContractService {
             contractRepository.save(contractToUpdate);
 
             logger.info("Contract: {} status updated successfully", event.contractId());
+
+            CompletedContractEvent event1 = new CompletedContractEvent(contract.get().getJobId());
+            this.kafkaProducerService.sendContractCompletedEvent(event1);
         }
     }
 }

@@ -1,0 +1,80 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /api
+
+spring:
+  application:
+    name: JobService
+
+  kafka:
+    bootstrap-servers: broker:29092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring:
+          json:
+            type:
+              mapping: >
+                job.created:com.freelancex.jobservice.dtos.event.job.CreateJobEvent,
+                job.updated:com.freelancex.jobservice.dtos.event.job.updateJobEvent
+
+    consumer:
+      group-id: job_event_group
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: "*"
+            type:
+              mapping: > 
+                user.created:com.freelancex.jobservice.dtos.event.user.CreateUserEvent,
+                contract.completed:com.freelancex.jobservice.dtos.event.contract.CompletedContractEvent
+          deserializer:
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+  datasource:
+    url: jdbc:postgresql://postgres:5432/job_service
+    username: postgres
+    password: postgres
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
+  instance:
+    prefer-ip-address: true
+
+springdoc:
+  swagger-ui:
+    path: /job/swagger-ui.html
+  api-docs:
+    path: /job/v3/api-docs
+
+kafka:
+  topics:
+    job-created: job.created
+    job-updated: job.updated
+    user-created: user.created
+    contract-completed: contract.completed
+logging:
+  level:
+    com: INFO
+    org.apache.kafka: ERROR

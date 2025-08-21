@@ -1,0 +1,125 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: ApiGateway
+
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:5173"
+              - "http://localhost:3000"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+            allowCredentials: true
+      routes:
+        - id: bid-service
+          uri: lb://BiddingService
+          predicates:
+            - Path=/api/bid/**
+
+        - id: contract-service
+          uri: lb://BiddingService
+          predicates:
+            - Path=/api/contract/**
+
+        - id: job-service
+          uri: lb://JobService
+          predicates:
+            - Path=/api/job/**
+
+        - id: notification-service
+          uri: lb://NotificationService
+          predicates:
+            - Path=/api/notification/**
+
+        - id: payment-service
+          uri: lb://PaymentService
+          predicates:
+            - Path=/api/payment/**
+
+        - id: rating-service
+          uri: lb://RatingService
+          predicates:
+            - Path=/api/rating/**
+
+        - id: skill-service
+          uri: lb://SkillService
+          predicates:
+            - Path=/api/skill/**
+
+        - id: user-auth
+          uri: lb://UserService
+          predicates:
+            - Path=/api/auth/**
+
+        - id: user-profile
+          uri: lb://UserService
+          predicates:
+            - Path=/api/user/**
+
+        - id: admin-management
+          uri: lb://UserService
+          predicates:
+            - Path=/api/admin/**
+
+    discovery:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,gateway
+  endpoint:
+    gateway:
+      access: unrestricted
+
+eureka:
+  client:
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    config-url: /v3/api-docs/swagger-config
+    urls:
+      - url: /v3/api-docs
+        name: API Gateway
+
+      - url: /api/user/v3/api-docs
+        name: UserService
+
+      - url: /api/job/v3/api-docs
+        name: JobService
+
+      - url: /api/bid/v3/api-docs
+        name: BiddingService
+
+      - url: /api/payment/v3/api-docs
+        name: PaymentService
+
+      - url: /api/rating/v3/api-docs
+        name: RatingService
+
+      - url: /api/notification/v3/api-docs
+        name: NotificationService
+
+      - url: /api/skill/v3/api-docs
+        name: SkillService
+
+jwt:
+  secret: wVr5k6M9qswkmvWbqGbD+yulTD8gd+Mm6HXyNkp9TiA=

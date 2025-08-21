@@ -1,15 +1,18 @@
-package com.freelancex.userservice.service;
+package com.freelancex.userservice.service.impl;
 
 import com.freelancex.userservice.dtos.api.CreateUserRequest;
 import com.freelancex.userservice.dtos.api.LoginRequest;
+import com.freelancex.userservice.dtos.api.UpdateUserRequest;
 import com.freelancex.userservice.dtos.event.CreateUserEvent;
 import com.freelancex.userservice.dtos.event.SkillVerifiedEvent;
+import com.freelancex.userservice.dtos.event.UpdateUserEvent;
 import com.freelancex.userservice.enums.UserRole;
 import com.freelancex.userservice.jwt.interfaces.JwtService;
 import com.freelancex.userservice.kafka.KafkaProducerService;
 import com.freelancex.userservice.model.Profile;
 import com.freelancex.userservice.model.User;
 import com.freelancex.userservice.repository.UserRepository;
+import com.freelancex.userservice.service.interfaces.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,36 +25,48 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class UserService {
+public class UserServiceImpl implements UserService {
 
-    private final Logger log = LoggerFactory.getLogger(UserService.class);
+    private final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final KafkaProducerService kafkaProducerService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
-                       JwtService jwtService, KafkaProducerService kafkaProducerService) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder,
+                           JwtService jwtService, KafkaProducerService kafkaProducerService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.kafkaProducerService = kafkaProducerService;
     }
 
+    @Override
     public String login(LoginRequest request) {
-        User user = getUserByEmail(request.getEmail());
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
+        }
+
+        User user = optionalUser.get();
+
+        if (user.isDisabled()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "user disabled.");
+        }
 
         boolean doesPasswordMatch = passwordEncoder.matches(request.getPassword(), user.getPassword());
 
         if (!doesPasswordMatch) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect password");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Incorrect email or password");
         }
 
-        return jwtService.generateToken(user.getEmail(), user.getRole().name());
+        return jwtService.generateToken(user.getUserId(), user.getRole().name());
     }
 
-    public User createUser(CreateUserRequest request) {
+    @Override
+    public void register(CreateUserRequest request) {
         Optional<User> optionalUser = userRepository.findByEmail(request.email());
 
         if (optionalUser.isPresent()) {
@@ -61,7 +76,7 @@ public class UserService {
         User user = new User();
         user.setPassword(passwordEncoder.encode(request.password()));
         user.setEmail(request.email());
-        user.setRole(UserRole.valueOf(request.role()));
+        user.setRole(request.role());
 
         Profile profile = new Profile();
         profile.setUser(user);
@@ -70,17 +85,16 @@ public class UserService {
         profile.setBio(request.bio());
         user.setProfile(profile);
 
-        User savedUser = userRepository.save(user);
+        userRepository.save(user);
 
         CreateUserEvent event = new CreateUserEvent(user.getUserId(), profile.getFirstName(),
                 profile.getLastName(), user.getRole());
 
         kafkaProducerService.sendUserCreatedEvent(event);
-
-        return savedUser;
     }
 
-    public void updateProfile(SkillVerifiedEvent event) {
+    @Override
+    public void updateSkillVerification(SkillVerifiedEvent event) {
         Optional<User> optionalUser = userRepository.findById(event.userId());
 
         if (optionalUser.isPresent()) {
@@ -94,21 +108,54 @@ public class UserService {
         }
     }
 
+    @Override
+    public void updateUser(UUID userId, UpdateUserRequest request) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+
+        if (optionalUser.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+        }
+
+        User user = optionalUser.get();
+        Profile profile = user.getProfile();
+        profile.setFirstName(request.firstName());
+        profile.setLastName(request.lastName());
+        profile.setBio(request.bio());
+
+        user.setProfile(profile);
+        userRepository.save(user);
+
+        UpdateUserEvent event = new UpdateUserEvent(user.getUserId(), profile.getFirstName(),
+                profile.getLastName(), user.getRole());
+        kafkaProducerService.sendUserUpdatedEvent(event);
+    }
+
+    @Override
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
-    public User findById(UUID id) {
-        return userRepository.findById(id)
+    @Override
+    public User getUserById(UUID userId) {
+        return userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 
+    @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public List<User> getUsersByRole(UserRole role) {
         return userRepository.findByRole(role);
+    }
+
+    @Override
+    public void disableUser(UUID userId) {
+        User user = getUserById(userId);
+        user.setDisabled(!user.isDisabled());
+        userRepository.save(user);
     }
 }

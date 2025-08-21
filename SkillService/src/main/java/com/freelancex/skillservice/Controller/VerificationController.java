@@ -3,7 +3,8 @@ package com.freelancex.skillservice.Controller;
 import com.freelancex.skillservice.dtos.common.ApiResponse;
 import com.freelancex.skillservice.dtos.VerifyRequestDto;
 import com.freelancex.skillservice.model.Certification;
-import com.freelancex.skillservice.services.VerificationService;
+import com.freelancex.skillservice.services.interfaces.VerificationService;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,4 +1,4 @@
-package com.freelancex.notificationservice.service;
+package com.freelancex.notificationservice.service.interfaces;
 
 import com.freelancex.notificationservice.model.Notification;
 
@@ -9,4 +9,6 @@ public interface NotificationService {
     List<Notification> getUserNotifications(UUID userId);
 
     void processEventNotification(String eventType, UUID userId, String content);
+    //misused method
+    //misused method
 }
