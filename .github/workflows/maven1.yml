@@ -1,4 +1,4 @@
-name: Java CI — NotificationService
+name: Java CI — NotificationService (no tests)
 
 on:
   push:
@@ -14,7 +14,6 @@ on:
 
 permissions:
   contents: read
-  security-events: write
   id-token: write
 
 jobs:
@@ -30,5 +29,10 @@ jobs:
           java-version: '17'
           cache: maven
 
+      - name: Print Java & Maven versions
+        run: |
+          java -version
+          mvn -v
+
       - name: Build NotificationService (skip tests)
-        run: mvn -B -f NotificationService/pom.xml package -DskipTests
+        run: mvn -B -f NotificationService/pom.xml clean package -DskipTests
