@@ -2,12 +2,12 @@ name: Java CI — NotificationService
 
 on:
   push:
-    branches: ["feature/main"]
+    branches: ["**"]
     paths:
       - "NotificationService/**"
       - ".github/workflows/**"
   pull_request:
-    branches: ["feature/main"]
+    branches: ["**"]
     paths:
       - "NotificationService/**"
       - ".github/workflows/**"
