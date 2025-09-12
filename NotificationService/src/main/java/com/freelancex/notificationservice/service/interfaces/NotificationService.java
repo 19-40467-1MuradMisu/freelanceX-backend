@@ -16,4 +16,5 @@ public interface NotificationService {
     // misused method
     // misused methodmnjgggy
     // misused method jkadjsjwuiedb
-}
+    // misused methodmsiidsfsdbdyusgjjhfbdsj
+    }
